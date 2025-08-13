@@ -218,17 +218,29 @@
         grid = next;
       }
 
-      function draw() {
-        ctx.fillStyle = "#0a0a0b";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "rgba(102,170,255,0.08)";
-        var s = cell * dpi;
-        for (var y = 0; y < rows; y++) {
-          for (var x = 0; x < cols; x++) {
-            if (grid[idx(x, y)]) ctx.fillRect(x * s, y * s, s - 1, s - 1);
-          }
-        }
-      }
+ function draw() {
+  // slightly lighter background, optional
+  ctx.fillStyle = "#0b0e14";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // BRIGHTER life cells
+  const LIFE_ALPHA = 0.8;           // try 0.16–0.35
+  ctx.fillStyle = `rgba(102,170,255,${LIFE_ALPHA})`;
+
+  // Optional glow to make cells pop
+  ctx.shadowColor = `rgba(102,170,255,${Math.min(1, LIFE_ALPHA * 1.8)})`;
+  ctx.shadowBlur = 14;                // try 6–14
+
+  const s = cell * dpi;
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      if (grid[idx(x, y)]) ctx.fillRect(x * s, y * s, s - 1, s - 1);
+    }
+  }
+
+  // reset shadow so other drawings (if any) aren’t blurred
+  ctx.shadowBlur = 0;
+}
 
       var last = 0, FPS = 24, interval = 1000 / FPS;
       function loop(t) {
