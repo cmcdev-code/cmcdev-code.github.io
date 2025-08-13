@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact · Your Name</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <!-- Conway's Game of Life background -->
+  <canvas id="gol" aria-hidden="true"></canvas>
+
+  <div id="container">
+    <div id="sidebar">
+      <div class="sidebar-photo">
+        <img id="random-headshot" src="" alt="Headshot">
+      </div>
+
+      <a class="sidebar-link" href="/">home</a>
+      <a class="sidebar-link" href="/papers/">papers</a>
+      <a class="sidebar-link" href="/contact/">contact</a>
+      <a class="sidebar-link" href="/blog/">blog</a>
+      <a class="sidebar-link" href="/pics/">pics</a>
+    </div>
+
+    <div id="main">
+      <h1 id="contact">Contact</h1>
+
+<div class="link-grid">
+
+  <!-- LinkedIn -->
+  <a class="link-card" href="https://www.linkedin.com/in/cmcdev/" rel="me noopener" target="_blank" data-label="in" aria-label="LinkedIn: cmcdev">
+    <span class="icon">
+      <img src="/assets/icons/linkedin.svg" alt="LinkedIn logo" onerror="this.style.display='none'; this.closest('.link-card').classList.add('fallback');" />
+    </span>
+    <span class="texts">
+      <span class="label">LinkedIn</span>
+      <span class="sub">@cmcdev</span>
+    </span>
+  </a>
+
+  <!-- GitHub -->
+  <a class="link-card" href="https://github.com/cmcdev-code" rel="me noopener" target="_blank" data-label="gh" aria-label="GitHub: cmcdev-code">
+    <span class="icon">
+      <img src="/assets/icons/github.svg" alt="GitHub logo" onerror="this.style.display='none'; this.closest('.link-card').classList.add('fallback');" />
+    </span>
+    <span class="texts">
+      <span class="label">GitHub</span>
+      <span class="sub">@cmcdev-code</span>
+    </span>
+  </a>
+
+  <!-- Instagram -->
+  <a class="link-card" href="https://instagram.com/collinmcdev" rel="me noopener" target="_blank" data-label="ig" aria-label="Instagram: collinmcdev">
+    <span class="icon">
+      <img src="/assets/icons/instagram.svg" alt="Instagram logo" onerror="this.style.display='none'; this.closest('.link-card').classList.add('fallback');" />
+    </span>
+    <span class="texts">
+      <span class="label">Instagram</span>
+      <span class="sub">@collinmcdev</span>
+    </span>
+  </a>
+
+  <!-- Twitter / X -->
+  <a class="link-card" href="https://twitter.com/mcdevittcollin" rel="me noopener" target="_blank" data-label="x" aria-label="Twitter (X): mcdevittcollin">
+    <span class="icon">
+      <img src="/assets/icons/x2.svg" alt="X logo" onerror="this.style.display='none'; this.closest('.link-card').classList.add('fallback');" />
+    </span>
+    <span class="texts">
+      <span class="label">Twitter / X</span>
+      <span class="sub">@mcdevittcollin</span>
+    </span>
+  </a>
+
+  <!-- Spotify -->
+  <a class="link-card" href="https://open.spotify.com/user/epicc123456789" rel="noopener" target="_blank" data-label="sp" aria-label="Spotify: collinmcdev">
+    <span class="icon">
+      <img src="/assets/icons/spotify.svg" alt="Spotify logo" onerror="this.style.display='none'; this.closest('.link-card').classList.add('fallback');" />
+    </span>
+    <span class="texts">
+      <span class="label">Spotify</span>
+      <span class="sub">@collinmcdev</span>
+    </span>
+  </a>
+
+  <div class="link-card copy" data-email="cmcdev@uchicago.edu" tabindex="0">
+  <span class="texts">
+    <span class="label">Email (UChicago)</span>
+    <span class="sub">cmcdev@uchicago.edu</span>
+  </span>
+</div>
+
+<!-- Email (VT) -->
+<div class="link-card copy" data-email="cmcdev@vt.edu" tabindex="0">
+  <span class="texts">
+    <span class="label">Email (VT)</span>
+    <span class="sub">cmcdev@vt.edu</span>
+  </span>
+</div>
+</div>
+
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // --- Random headshot from all JPG/JPEGs in /assets/headshots/ ---
+      
+      
+      
+      var images = [
+        "/assets/headshots/IMG_0714.jpg","/assets/headshots/IMG_1155.jpg","/assets/headshots/IMG_1435.jpg","/assets/headshots/IMG_1673.jpg","/assets/headshots/IMG_2497.jpg","/assets/headshots/IMG_4087.jpg","/assets/headshots/IMG_8797.jpg","/assets/headshots/IMG_8900.jpg"
+      ];
+      if (images.length) {
+        var hs = document.getElementById("random-headshot");
+        hs.src = images[Math.floor(Math.random() * images.length)];
+      }
+
+      // --- Conway's Game of Life background ---
+      var canvas = document.getElementById("gol");
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        // Respect reduced motion; keep static background
+        return;
+      }
+      var ctx  = canvas.getContext("2d", { alpha: false });
+      var dpi  = window.devicePixelRatio || 1;
+      var cell = 6;            // cell size in CSS px
+      var cols, rows, grid;
+
+      function resize() {
+        canvas.width  = Math.floor(window.innerWidth  * dpi);
+        canvas.height = Math.floor(window.innerHeight * dpi);
+        canvas.style.width  = "100vw";
+        canvas.style.height = "100vh";
+        cols = Math.floor(canvas.width  / (cell * dpi));
+        rows = Math.floor(canvas.height / (cell * dpi));
+        grid = new Uint8Array(cols * rows);
+        seed();
+        draw();
+      }
+
+      function idx(x, y){ return y * cols + x; }
+
+      function seed() {
+        grid.fill(0);
+        for (var i = 0; i < grid.length; i++) if (Math.random() < 0.12) grid[i] = 1;
+      }
+
+      function step() {
+        var next = new Uint8Array(grid.length);
+        for (var y = 0; y < rows; y++) {
+          for (var x = 0; x < cols; x++) {
+            var n = 0;
+            for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) if (dx || dy) {
+              var xx = (x + dx + cols) % cols;
+              var yy = (y + dy + rows) % rows;
+              n += grid[idx(xx, yy)];
+            }
+            var i = idx(x, y);
+            next[i] = grid[i] ? (n === 2 || n === 3) : (n === 3);
+          }
+        }
+        grid = next;
+      }
+
+      function draw() {
+        ctx.fillStyle = "#0a0a0b";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(102,170,255,0.08)"; // faint blue for live cells
+        var s = cell * dpi;
+        for (var y = 0; y < rows; y++) {
+          for (var x = 0; x < cols; x++) {
+            if (grid[idx(x, y)]) ctx.fillRect(x * s, y * s, s - 1, s - 1);
+          }
+        }
+      }
+
+      var last = 0, FPS = 24, interval = 1000 / FPS;
+      function loop(t) {
+        if (t - last > interval) {
+          last = t;
+          step();
+          draw();
+          if (Math.random() < 0.002) seed(); // occasional reseed so it never dies out
+        }
+        requestAnimationFrame(loop);
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+      requestAnimationFrame(loop);
+
+      // --- Copy-to-clipboard for email cards on /contact ---
+      function copyTextFromCard(card) {
+        var txt = card?.dataset?.copy;
+        if (!txt) return;
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(txt).then(function () {
+            card.classList.add("copied");
+            setTimeout(function(){ card.classList.remove("copied"); }, 900);
+          }).catch(function(){
+            window.prompt("Copy email:", txt);
+          });
+        } else {
+          var ta = document.createElement("textarea");
+          ta.value = txt; document.body.appendChild(ta);
+          ta.select(); try { document.execCommand("copy"); } catch(e){}
+          document.body.removeChild(ta);
+          card.classList.add("copied");
+          setTimeout(function(){ card.classList.remove("copied"); }, 900);
+        }
+      }
+
+      document.addEventListener("click", function (e) {
+        var card = e.target.closest(".link-card.copy");
+        if (card) copyTextFromCard(card);
+      });
+      document.addEventListener("keydown", function (e) {
+        if ((e.key === "Enter" || e.key === " ") && e.target.closest(".link-card.copy")) {
+          e.preventDefault();
+          copyTextFromCard(e.target.closest(".link-card.copy"));
+        }
+      });
+    });
+  </script>
+</body>
+</html>

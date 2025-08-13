@@ -1,0 +1,222 @@
+/* ---------- globals & variables ---------- */
+:root {
+  /* main content transparency */
+  --overlay-alpha: 0.01;
+
+  /* sidebar transparencies */
+  --sidebar-alpha: 0.4;       /* entire left sidebar panel */
+  --sidebar-card-alpha: 0.5;  /* each sidebar button */
+  --sidebar-photo-alpha: 0.35; /* headshot box */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: #f0f0f0;
+  background: #0b0b0c; /* fallback if JS is disabled */
+  font-family: 'Times New Roman', Times, serif;
+  line-height: 1.45;
+}
+
+/* ---------- Game of Life canvas (background) ---------- */
+#gol {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0; /* behind everything */
+  display: block;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  #gol { display: none; }
+}
+
+/* ---------- site chrome overlaying the canvas ---------- */
+#container {
+  position: relative;
+  z-index: 1;           /* above canvas */
+  display: flex;
+  max-width: 900px;
+  margin: 24px auto;
+  border: 1px solid #444;
+  backdrop-filter: blur(2px);
+}
+
+/* ----- sidebar (left column) ----- */
+#sidebar {
+  background: rgba(34,34,34, var(--sidebar-alpha));
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+/* headshot box */
+.sidebar-photo {
+  width: 150px;
+  background: rgba(51,51,51, var(--sidebar-photo-alpha));
+  border: 1px solid #555;
+  padding: 6px;
+  margin-bottom: 10px;
+}
+.sidebar-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 0;
+}
+
+/* sidebar buttons */
+.sidebar-link {
+  display: block;
+  width: 150px;
+  text-align: center;
+  background: rgba(51,51,51, var(--sidebar-card-alpha));
+  margin: 3px 0;
+  padding: 5px;
+  border: 1px solid #555;
+  text-decoration: none;
+  color: #f0f0f0;
+  font-weight: bold;
+}
+.sidebar-link:hover {
+  background: rgba(85,85,85, var(--sidebar-card-alpha));
+}
+
+/* ----- main content panel ----- */
+#main {
+  flex: 1;
+  padding: 15px;
+  background: rgba(0, 0, 0, var(--overlay-alpha));
+}
+
+/* links */
+a { color: #66aaff; }
+a:visited { color: #9988cc; }
+
+/* ---- contact grid ---- */
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.link-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #555;
+  background: rgba(0,0,0,0.45);
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+}
+
+.link-card:hover {
+  background: rgba(0,0,0,0.6);
+  border-color: #66aaff;
+}
+
+.link-card .icon {
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.06);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.link-card .icon img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Fallback if logo file is missing: small badge with initials/emoji */
+.link-card.fallback .icon {
+  background: rgba(102,170,255,0.15);
+  color: #cfe3ff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* labels */
+.link-card .texts {
+  display: grid;
+  line-height: 1.2;
+}
+.link-card .label { font-weight: 600; }
+.link-card .sub   { font-size: 12px; opacity: 0.8; }
+
+/* copy-to-clipboard cards */
+.link-card.copy { cursor: pointer; position: relative; }
+.link-card.copy:focus { outline: 2px solid #66aaff; outline-offset: 2px; }
+
+/* little “copied!” badge */
+.link-card.copy::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  font-size: 11px;
+  color: #bcd6ff;
+  opacity: 0;
+  transition: opacity .15s ease;
+  pointer-events: none;
+}
+.link-card.copy.copied::after {
+  content: "copied!";
+  opacity: 1;
+}
+
+/* ---- pics grid ---- */
+.pics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.pics-grid a {
+  display: block;
+  border: 1px solid #555;
+  background: rgba(0,0,0,0.45);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.pics-grid img {
+  width: 100%;
+  height: 160px;        /* uniform tiles */
+  object-fit: cover;    /* crop center */
+  display: block;
+}
+
+@media (min-width: 900px) {
+  .pics-grid img { height: 200px; }
+}
+.post-list {
+  list-style: none;
+  padding: 0;
+}
+
+.post-list li {
+  margin: 8px 0;
+}
+
+.post-title {
+  margin-bottom: 4px;
+}
+
+.post-date {
+  font-size: 0.85em;
+  opacity: 0.75;
+}

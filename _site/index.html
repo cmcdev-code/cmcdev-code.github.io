@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Name</title>
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <!-- Conway's Game of Life background -->
+  <canvas id="gol" aria-hidden="true"></canvas>
+
+  <div id="container">
+    <div id="sidebar">
+      <div class="sidebar-photo">
+        <img id="random-headshot" src="" alt="Headshot">
+      </div>
+
+      <a class="sidebar-link" href="/">home</a>
+      <a class="sidebar-link" href="/papers/">papers</a>
+      <a class="sidebar-link" href="/contact/">contact</a>
+      <a class="sidebar-link" href="/blog/">blog</a>
+      <a class="sidebar-link" href="/pics/">pics</a>
+    </div>
+
+    <div id="main">
+      <h2 id="hiiiiii">Hiiiiii!</h2>
+
+<p>This is my new and improved <em>static</em> website. My old one is here [cmcdev.org], but I no longer have access to it.</p>
+
+<p>I recently completed my bachelor’s degree in Mathematics at Virginia Tech and have now begun my master’s in Applied Data Science at the University of Chicago. This summer, I have been working as a software engineering intern at Translogistics. In my free time, I have been reading various books.</p>
+
+<p>I just finished <a href="https://link.springer.com/book/10.1007/978-1-4612-1046-7"><em>An Introduction to Probabilistic Modeling</em></a>. I attempted it last summer but didn’t yet have the analysis background required, so it was exciting to revisit it this year after completing my analysis sequence. Now I’m working through <em><a href="https://link.springer.com/book/10.1007/978-3-031-06664-1">Algebraic Foundations for Applied Topology and Data Analysis</a></em>. I’m enjoying it so far—it’s fun to revisit concepts from my abstract algebra class, like <a href="https://en.wikipedia.org/wiki/Localization_(commutative_algebra)">localization</a>, while also learning about new topics such as <a href="https://en.wikipedia.org/wiki/Vector_bundle">vector bundles</a>.</p>
+
+<p>After I finish this book (in about a month), I plan to start another on <a href="https://en.wikipedia.org/wiki/Topological_data_analysis">topological data analysis</a>, as well as one I picked up on sale: <a href="https://www.cambridge.org/core/books/largescale-convex-optimization/2A7F8E7428BFA4EDB8AFACA11AB97E4C"><em>Large-Scale Convex Optimization via Monotone Operators</em></a>. I’m still exploring my research interests, and right now I’m leaning toward either convex optimization or TDA, but we’ll see where things go.</p>
+
+<h2 id="education">Education</h2>
+<ul>
+  <li><strong>B.S.</strong> — Virginia Tech, Mathematics</li>
+  <li><strong>M.S.</strong> — Applied Data Science, The University of Chicago</li>
+</ul>
+
+<h2 id="experience">Experience</h2>
+<ul>
+  <li>Software Engineer Intern — Translogistics</li>
+  <li>Research Assistant — Virginia Tech Industrial and Systems Engineering Department</li>
+  <li>Actuary Intern — Symetra Financial</li>
+  <li>Research Assistant — Virginia Tech Mathematics Department</li>
+  <li>Software Engineer Intern — Translogistics</li>
+</ul>
+
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // --- Random headshot from all JPG/JPEGs in /assets/headshots/ ---
+      
+      
+      
+      var images = [
+        "/assets/headshots/IMG_0714.jpg","/assets/headshots/IMG_1155.jpg","/assets/headshots/IMG_1435.jpg","/assets/headshots/IMG_1673.jpg","/assets/headshots/IMG_2497.jpg","/assets/headshots/IMG_4087.jpg","/assets/headshots/IMG_8797.jpg","/assets/headshots/IMG_8900.jpg"
+      ];
+      if (images.length) {
+        var hs = document.getElementById("random-headshot");
+        hs.src = images[Math.floor(Math.random() * images.length)];
+      }
+
+      // --- Conway's Game of Life background ---
+      var canvas = document.getElementById("gol");
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        // Respect reduced motion; keep static background
+        return;
+      }
+      var ctx  = canvas.getContext("2d", { alpha: false });
+      var dpi  = window.devicePixelRatio || 1;
+      var cell = 6;            // cell size in CSS px
+      var cols, rows, grid;
+
+      function resize() {
+        canvas.width  = Math.floor(window.innerWidth  * dpi);
+        canvas.height = Math.floor(window.innerHeight * dpi);
+        canvas.style.width  = "100vw";
+        canvas.style.height = "100vh";
+        cols = Math.floor(canvas.width  / (cell * dpi));
+        rows = Math.floor(canvas.height / (cell * dpi));
+        grid = new Uint8Array(cols * rows);
+        seed();
+        draw();
+      }
+
+      function idx(x, y){ return y * cols + x; }
+
+      function seed() {
+        grid.fill(0);
+        for (var i = 0; i < grid.length; i++) if (Math.random() < 0.12) grid[i] = 1;
+      }
+
+      function step() {
+        var next = new Uint8Array(grid.length);
+        for (var y = 0; y < rows; y++) {
+          for (var x = 0; x < cols; x++) {
+            var n = 0;
+            for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) if (dx || dy) {
+              var xx = (x + dx + cols) % cols;
+              var yy = (y + dy + rows) % rows;
+              n += grid[idx(xx, yy)];
+            }
+            var i = idx(x, y);
+            next[i] = grid[i] ? (n === 2 || n === 3) : (n === 3);
+          }
+        }
+        grid = next;
+      }
+
+      function draw() {
+        ctx.fillStyle = "#0a0a0b";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(102,170,255,0.08)"; // faint blue for live cells
+        var s = cell * dpi;
+        for (var y = 0; y < rows; y++) {
+          for (var x = 0; x < cols; x++) {
+            if (grid[idx(x, y)]) ctx.fillRect(x * s, y * s, s - 1, s - 1);
+          }
+        }
+      }
+
+      var last = 0, FPS = 24, interval = 1000 / FPS;
+      function loop(t) {
+        if (t - last > interval) {
+          last = t;
+          step();
+          draw();
+          if (Math.random() < 0.002) seed(); // occasional reseed so it never dies out
+        }
+        requestAnimationFrame(loop);
+      }
+
+      resize();
+      window.addEventListener("resize", resize);
+      requestAnimationFrame(loop);
+
+      // --- Copy-to-clipboard for email cards on /contact ---
+      function copyTextFromCard(card) {
+        var txt = card?.dataset?.copy;
+        if (!txt) return;
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(txt).then(function () {
+            card.classList.add("copied");
+            setTimeout(function(){ card.classList.remove("copied"); }, 900);
+          }).catch(function(){
+            window.prompt("Copy email:", txt);
+          });
+        } else {
+          var ta = document.createElement("textarea");
+          ta.value = txt; document.body.appendChild(ta);
+          ta.select(); try { document.execCommand("copy"); } catch(e){}
+          document.body.removeChild(ta);
+          card.classList.add("copied");
+          setTimeout(function(){ card.classList.remove("copied"); }, 900);
+        }
+      }
+
+      document.addEventListener("click", function (e) {
+        var card = e.target.closest(".link-card.copy");
+        if (card) copyTextFromCard(card);
+      });
+      document.addEventListener("keydown", function (e) {
+        if ((e.key === "Enter" || e.key === " ") && e.target.closest(".link-card.copy")) {
+          e.preventDefault();
+          copyTextFromCard(e.target.closest(".link-card.copy"));
+        }
+      });
+    });
+  </script>
+</body>
+</html>
