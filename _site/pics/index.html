@@ -141,27 +141,148 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // --- Random headshot from all JPG/JPEGs in /assets/headshots/ ---
-      
-      
-      
+      // --- Random headshot (GitHub Pages–safe Liquid: no where_exp / concat) ---
       var images = [
-        "/assets/headshots/IMG_0714.jpg","/assets/headshots/IMG_1155.jpg","/assets/headshots/IMG_1435.jpg","/assets/headshots/IMG_1673.jpg","/assets/headshots/IMG_2497.jpg","/assets/headshots/IMG_4087.jpg","/assets/headshots/IMG_8797.jpg","/assets/headshots/IMG_8900.jpg"
+      
+      
+        
+          
+          
+            "/assets/headshots/IMG_0714.jpg"
+            
+          
+        
+      
+        
+          
+          
+            ,"/assets/headshots/IMG_1155.jpg"
+            
+          
+        
+      
+        
+          
+          
+            ,"/assets/headshots/IMG_1435.jpg"
+            
+          
+        
+      
+        
+          
+          
+            ,"/assets/headshots/IMG_1673.jpg"
+            
+          
+        
+      
+        
+          
+          
+            ,"/assets/headshots/IMG_2497.jpg"
+            
+          
+        
+      
+        
+          
+          
+            ,"/assets/headshots/IMG_4087.jpg"
+            
+          
+        
+      
+        
+          
+          
+            ,"/assets/headshots/IMG_8797.jpg"
+            
+          
+        
+      
+        
+          
+          
+            ,"/assets/headshots/IMG_8900.jpg"
+            
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
       ];
-      if (images.length) {
-        var hs = document.getElementById("random-headshot");
+      var hs = document.getElementById("random-headshot");
+      if (hs && images.length) {
         hs.src = images[Math.floor(Math.random() * images.length)];
       }
 
       // --- Conway's Game of Life background ---
       var canvas = document.getElementById("gol");
       if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        // Respect reduced motion; keep static background
-        return;
+        return; // honor reduced motion
       }
       var ctx  = canvas.getContext("2d", { alpha: false });
       var dpi  = window.devicePixelRatio || 1;
-      var cell = 6;            // cell size in CSS px
+      var cell = 6;
       var cols, rows, grid;
 
       function resize() {
@@ -203,7 +324,7 @@
       function draw() {
         ctx.fillStyle = "#0a0a0b";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "rgba(102,170,255,0.08)"; // faint blue for live cells
+        ctx.fillStyle = "rgba(102,170,255,0.08)";
         var s = cell * dpi;
         for (var y = 0; y < rows; y++) {
           for (var x = 0; x < cols; x++) {
@@ -218,7 +339,7 @@
           last = t;
           step();
           draw();
-          if (Math.random() < 0.002) seed(); // occasional reseed so it never dies out
+          if (Math.random() < 0.002) seed();
         }
         requestAnimationFrame(loop);
       }
@@ -229,7 +350,7 @@
 
       // --- Copy-to-clipboard for email cards on /contact ---
       function copyTextFromCard(card) {
-        var txt = card?.dataset?.copy;
+        var txt = card && card.getAttribute('data-copy');
         if (!txt) return;
         if (navigator.clipboard && window.isSecureContext) {
           navigator.clipboard.writeText(txt).then(function () {
@@ -249,13 +370,14 @@
       }
 
       document.addEventListener("click", function (e) {
-        var card = e.target.closest(".link-card.copy");
+        var card = e.target.closest && e.target.closest(".link-card.copy");
         if (card) copyTextFromCard(card);
       });
       document.addEventListener("keydown", function (e) {
-        if ((e.key === "Enter" || e.key === " ") && e.target.closest(".link-card.copy")) {
+        var el = e.target && e.target.closest && e.target.closest(".link-card.copy");
+        if ((e.key === "Enter" || e.key === " ") && el) {
           e.preventDefault();
-          copyTextFromCard(e.target.closest(".link-card.copy"));
+          copyTextFromCard(el);
         }
       });
     });
