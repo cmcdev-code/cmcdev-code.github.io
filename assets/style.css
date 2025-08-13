@@ -7,6 +7,10 @@
   --sidebar-alpha: 0.6;       /* entire left sidebar panel */
   --sidebar-card-alpha: 0.5;  /* each sidebar button */
   --sidebar-photo-alpha: 0.35; /* headshot box */
+  --gol-alpha: 0.28;           /* ↑ make this bigger for brighter cells (0–1) */
+  --gol-cell: 102,170,255;     /* RGB for the cell color */
+  --gol-glow: 10;              /* soft glow size in px */
+  --gol-bg: #0b0e14;   
 }
 
 * { box-sizing: border-box; }
@@ -23,8 +27,8 @@ body {
 #gol {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 150vw;
+  height: 150vh;
   z-index: 0; /* behind everything */
   display: block;
 }

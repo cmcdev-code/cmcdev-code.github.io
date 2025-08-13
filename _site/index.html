@@ -214,7 +214,7 @@
 
       function seed() {
         grid.fill(0);
-        for (var i = 0; i < grid.length; i++) if (Math.random() < 0.12) grid[i] = 1;
+        for (var i = 0; i < grid.length; i++) if (Math.random() < 0.25) grid[i] = 1;
       }
 
       function step() {
@@ -264,7 +264,7 @@
           last = t;
           step();
           draw();
-          if (Math.random() < 0.0000002) seed();
+         
         }
         requestAnimationFrame(loop);
       }
