@@ -1,10 +1,10 @@
 /* ---------- globals & variables ---------- */
 :root {
   /* main content transparency */
-  --overlay-alpha: 0.4;
+  --overlay-alpha: .86;
 
   /* sidebar transparencies */
-  --sidebar-alpha: 0.6;       /* entire left sidebar panel */
+  --sidebar-alpha: 0.7;       /* entire left sidebar panel */
   --sidebar-card-alpha: 0.5;  /* each sidebar button */
   --sidebar-photo-alpha: 0.35; /* headshot box */
   --gol-alpha: 0.28;           /* ↑ make this bigger for brighter cells (0–1) */
