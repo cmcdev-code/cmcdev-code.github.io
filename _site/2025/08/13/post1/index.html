@@ -61,276 +61,398 @@ I FaceTimed Erin for 64 minutes. Then I took the online assessment for <a href="
     </div>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      // --- Random headshot (GitHub Pages–safe Liquid: no where_exp / concat) ---
-      var images = [
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  /* ---------------- Random headshot (Pages-safe Liquid) ---------------- */
+  var images = [
+  
+  
+    
       
       
-        
-          
-          
-            "/assets/headshots/IMG_0714.jpg"
-            
-          
+        "/assets/headshots/IMG_0714.jpg"
         
       
-        
-          
-          
-            ,"/assets/headshots/IMG_1155.jpg"
-            
-          
+    
+  
+    
+      
+      
+        ,"/assets/headshots/IMG_1155.jpg"
         
       
-        
-          
-          
-            ,"/assets/headshots/IMG_1435.jpg"
-            
-          
+    
+  
+    
+      
+      
+        ,"/assets/headshots/IMG_1435.jpg"
         
       
-        
-          
-          
-            ,"/assets/headshots/IMG_1673.jpg"
-            
-          
+    
+  
+    
+      
+      
+        ,"/assets/headshots/IMG_1673.jpg"
         
       
-        
-          
-          
-            ,"/assets/headshots/IMG_2497.jpg"
-            
-          
+    
+  
+    
+      
+      
+        ,"/assets/headshots/IMG_2497.jpg"
         
       
-        
-          
-          
-            ,"/assets/headshots/IMG_4087.jpg"
-            
-          
+    
+  
+    
+      
+      
+        ,"/assets/headshots/IMG_4087.jpg"
         
       
-        
-          
-          
-            ,"/assets/headshots/IMG_8797.jpg"
-            
-          
+    
+  
+    
+      
+      
+        ,"/assets/headshots/IMG_8797.jpg"
         
       
-        
-          
-          
-            ,"/assets/headshots/IMG_8900.jpg"
-            
-          
+    
+  
+    
+      
+      
+        ,"/assets/headshots/IMG_8900.jpg"
         
       
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-      ];
-      var hs = document.getElementById("random-headshot");
-      if (hs && images.length) {
-        hs.src = images[Math.floor(Math.random() * images.length)];
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  ];
+  var hs = document.getElementById("random-headshot");
+  if (hs && images.length) hs.src = images[Math.floor(Math.random() * images.length)];
+
+  /* ---------------- Conway's Game of Life (persistent, bright) ---------------- */
+  var canvas = document.getElementById("gol");
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var ctx  = canvas.getContext("2d", { alpha: false });
+  var dpi  = window.devicePixelRatio || 1;
+  var cell = 6; // CSS px per cell
+  var cols = 0, rows = 0, grid = null;
+  var saveKey = "golStateV2";
+  var lastSave = 0;
+
+  function cssVars() {
+    var cs = getComputedStyle(document.documentElement);
+    return {
+      alpha: parseFloat(cs.getPropertyValue('--gol-alpha')) || 0.8,
+      rgb:   (cs.getPropertyValue('--gol-cell') || '102,170,255').trim(),
+      glow:  parseFloat(cs.getPropertyValue('--gol-glow')) || 14,
+      bg:    (cs.getPropertyValue('--gol-bg') || '#0b0e14').trim(),
+    };
+  }
+  function idx(x,y){ return y*cols + x; }
+
+  function serializeGrid(g) {
+    var out = new Array(g.length);
+    for (var i=0;i<g.length;i++) out[i] = g[i] ? '1' : '0';
+    return out.join('');
+  }
+  function deserializeGrid(str) {
+    var a = new Uint8Array(str.length);
+    for (var i=0;i<str.length;i++) a[i] = (str.charCodeAt(i) === 49) ? 1 : 0;
+    return a;
+  }
+  function saveState(throttleMs) {
+    var now = Date.now();
+    if (throttleMs && (now - lastSave) < throttleMs) return;
+    lastSave = now;
+    try {
+      localStorage.setItem(saveKey, JSON.stringify({
+        cols: cols, rows: rows, cell: cell,
+        data: serializeGrid(grid)
+      }));
+    } catch(e) {}
+  }
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(saveKey);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e) { return null; }
+  }
+
+  function resizeCanvas() {
+    canvas.width  = Math.floor(window.innerWidth  * dpi);
+    canvas.height = Math.floor(window.innerHeight * dpi);
+    canvas.style.width  = "100vw";
+    canvas.style.height = "100vh";
+    cols = Math.max(1, Math.floor(canvas.width  / (cell * dpi)));
+    rows = Math.max(1, Math.floor(canvas.height / (cell * dpi)));
+  }
+
+  function mapOldToNew(oldGrid, oldCols, oldRows, newCols, newRows) {
+    var next = new Uint8Array(newCols * newRows);
+    if (!oldGrid || !oldCols || !oldRows) return next;
+    for (var y=0;y<newRows;y++) {
+      for (var x=0;x<newCols;x++) {
+        var ox = x % oldCols, oy = y % oldRows;
+        next[y*newCols + x] = oldGrid[oy*oldCols + ox];
       }
+    }
+    return next;
+  }
 
-      // --- Conway's Game of Life background ---
-      var canvas = document.getElementById("gol");
-      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        return; // honor reduced motion
-      }
-      var ctx  = canvas.getContext("2d", { alpha: false });
-      var dpi  = window.devicePixelRatio || 1;
-      var cell = 6;
-      var cols, rows, grid;
+  function seedRandom() {
+    grid.fill(0);
+    for (var i=0;i<grid.length;i++) if (Math.random() < 0.12) grid[i] = 1;
+  }
 
-      function resize() {
-        canvas.width  = Math.floor(window.innerWidth  * dpi);
-        canvas.height = Math.floor(window.innerHeight * dpi);
-        canvas.style.width  = "100vw";
-        canvas.style.height = "100vh";
-        cols = Math.floor(canvas.width  / (cell * dpi));
-        rows = Math.floor(canvas.height / (cell * dpi));
-        grid = new Uint8Array(cols * rows);
-        seed();
-        draw();
-      }
+  function setupFromStoredOrSeed() {
+    var stored = loadState();
+    resizeCanvas();
+    if (stored && stored.data && typeof stored.cols === 'number' && typeof stored.rows === 'number') {
+      if (typeof stored.cell === 'number' && stored.cell > 0) cell = stored.cell;
+      var old = deserializeGrid(stored.data);
+      grid = mapOldToNew(old, stored.cols|0, stored.rows|0, cols, rows);
+    } else {
+      grid = new Uint8Array(cols * rows);
+      seedRandom(); // first visit only
+    }
+    saveState(0);
+  }
 
-      function idx(x, y){ return y * cols + x; }
+  function handleResize() {
+    var oldGrid = grid, oldCols = cols, oldRows = rows;
+    resizeCanvas();
+    grid = mapOldToNew(oldGrid, oldCols, oldRows, cols, rows);
+    saveState(0);
+    draw();
+  }
 
-      function seed() {
-        grid.fill(0);
-        for (var i = 0; i < grid.length; i++) if (Math.random() < 0.25) grid[i] = 1;
-      }
-
-      function step() {
-        var next = new Uint8Array(grid.length);
-        for (var y = 0; y < rows; y++) {
-          for (var x = 0; x < cols; x++) {
-            var n = 0;
-            for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) if (dx || dy) {
-              var xx = (x + dx + cols) % cols;
-              var yy = (y + dy + rows) % rows;
-              n += grid[idx(xx, yy)];
-            }
-            var i = idx(x, y);
-            next[i] = grid[i] ? (n === 2 || n === 3) : (n === 3);
-          }
+  function step() {
+    var next = new Uint8Array(grid.length);
+    for (var y=0;y<rows;y++) {
+      for (var x=0;x<cols;x++) {
+        var n = 0;
+        for (var dy=-1; dy<=1; dy++) for (var dx=-1; dx<=1; dx++) if (dx||dy) {
+          var xx = (x + dx + cols) % cols;
+          var yy = (y + dy + rows) % rows;
+          n += grid[yy*cols + xx];
         }
-        grid = next;
+        var i = idx(x,y);
+        next[i] = grid[i] ? (n===2 || n===3) : (n===3);
       }
+    }
+    grid = next;
+  }
 
- function draw() {
-  // slightly lighter background, optional
-  ctx.fillStyle = "#0b0e14";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  function draw() {
+    var v = cssVars();
+    ctx.fillStyle = v.bg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // BRIGHTER life cells
-  const LIFE_ALPHA = 0.8;           // try 0.16–0.35
-  ctx.fillStyle = `rgba(102,170,255,${LIFE_ALPHA})`;
+    ctx.fillStyle  = "rgba(" + v.rgb + "," + v.alpha + ")";
+    ctx.shadowColor = "rgba(" + v.rgb + "," + Math.min(1, v.alpha * 1.8) + ")";
+    ctx.shadowBlur  = v.glow;
 
-  // Optional glow to make cells pop
-  ctx.shadowColor = `rgba(102,170,255,${Math.min(1, LIFE_ALPHA * 1.8)})`;
-  ctx.shadowBlur = 14;                // try 6–14
+    var s = cell * dpi;
+    for (var y=0;y<rows;y++) {
+      for (var x=0;x<cols;x++) {
+        if (grid[idx(x,y)]) ctx.fillRect(x*s, y*s, s-1, s-1);
+      }
+    }
+    ctx.shadowBlur = 0;
+  }
 
-  const s = cell * dpi;
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      if (grid[idx(x, y)]) ctx.fillRect(x * s, y * s, s - 1, s - 1);
+  /* ---------------- Single-cell drawing with drag ---------------- */
+  function setCell(gx, gy) {
+    gx = (gx + cols) % cols;
+    gy = (gy + rows) % rows;
+    grid[idx(gx, gy)] = 1;
+  }
+  function setCellAtCSS(xCss, yCss) {
+    setCell(Math.floor(xCss / cell), Math.floor(yCss / cell));
+  }
+  // draw a line of single cells between two grid points (avoids gaps on fast drags)
+  function drawLineCells(gx0, gy0, gx1, gy1) {
+    var dx = Math.abs(gx1 - gx0), sx = gx0 < gx1 ? 1 : -1;
+    var dy = -Math.abs(gy1 - gy0), sy = gy0 < gy1 ? 1 : -1;
+    var err = dx + dy, e2;
+    while (true) {
+      setCell(gx0, gy0);
+      if (gx0 === gx1 && gy0 === gy1) break;
+      e2 = 2 * err;
+      if (e2 >= dy) { err += dy; gx0 += sx; }
+      if (e2 <= dx) { err += dx; gy0 += sy; }
     }
   }
 
-  // reset shadow so other drawings (if any) aren’t blurred
-  ctx.shadowBlur = 0;
-}
+  var drawing = false, lastGX = null, lastGY = null;
 
-      var last = 0, FPS = 24, interval = 1000 / FPS;
-      function loop(t) {
-        if (t - last > interval) {
-          last = t;
-          step();
-          draw();
-         
-        }
-        requestAnimationFrame(loop);
-      }
+  function shouldIgnore(ev) {
+    // allow drawing anywhere except inside the main content area
+    return ev.target.closest && ev.target.closest('#main');
+  }
 
-      resize();
-      window.addEventListener("resize", resize);
-      requestAnimationFrame(loop);
+  document.addEventListener('pointerdown', function (e) {
+    if (e.button !== 0) return;           // left button only
+    if (shouldIgnore(e)) return;
+    drawing = true;
+    var gx = Math.floor(e.clientX / cell);
+    var gy = Math.floor(e.clientY / cell);
+    setCell(gx, gy);                       // single cell at cursor
+    lastGX = gx; lastGY = gy;
+    saveState(0);
+    draw();
+  });
 
-      // --- Copy-to-clipboard for email cards on /contact ---
-      function copyTextFromCard(card) {
-        var txt = card && card.getAttribute('data-copy');
-        if (!txt) return;
-        if (navigator.clipboard && window.isSecureContext) {
-          navigator.clipboard.writeText(txt).then(function () {
-            card.classList.add("copied");
-            setTimeout(function(){ card.classList.remove("copied"); }, 900);
-          }).catch(function(){
-            window.prompt("Copy email:", txt);
-          });
-        } else {
-          var ta = document.createElement("textarea");
-          ta.value = txt; document.body.appendChild(ta);
-          ta.select(); try { document.execCommand("copy"); } catch(e){}
-          document.body.removeChild(ta);
-          card.classList.add("copied");
-          setTimeout(function(){ card.classList.remove("copied"); }, 900);
-        }
-      }
+  document.addEventListener('pointermove', function (e) {
+    if (!drawing) return;
+    if (shouldIgnore(e)) return;
+    var gx = Math.floor(e.clientX / cell);
+    var gy = Math.floor(e.clientY / cell);
+    if (lastGX == null) {
+      setCell(gx, gy);
+    } else if (gx !== lastGX || gy !== lastGY) {
+      drawLineCells(lastGX, lastGY, gx, gy); // smooth drawing while dragging
+    }
+    lastGX = gx; lastGY = gy;
+    draw();
+  });
 
-      document.addEventListener("click", function (e) {
-        var card = e.target.closest && e.target.closest(".link-card.copy");
-        if (card) copyTextFromCard(card);
-      });
-      document.addEventListener("keydown", function (e) {
-        var el = e.target && e.target.closest && e.target.closest(".link-card.copy");
-        if ((e.key === "Enter" || e.key === " ") && el) {
-          e.preventDefault();
-          copyTextFromCard(el);
-        }
-      });
-    });
-  </script>
+  function stopDraw() { drawing = false; lastGX = lastGY = null; saveState(300); }
+  document.addEventListener('pointerup', stopDraw);
+  document.addEventListener('pointercancel', stopDraw);
+  document.addEventListener('pointerleave', function(e){
+    if (e.pointerType === 'mouse') stopDraw();
+  });
+
+  /* ---------------- Loop & init ---------------- */
+  var last = 0, FPS = 24, interval = 1000 / FPS;
+  function loop(t) {
+    if (t - last > interval) {
+      last = t;
+      step();
+      draw();
+      saveState(1500);
+    }
+    requestAnimationFrame(loop);
+  }
+
+  setupFromStoredOrSeed();
+  window.addEventListener("resize", handleResize);
+  requestAnimationFrame(loop);
+
+  /* ---------------- Copy-to-clipboard for email cards ---------------- */
+  function copyTextFromCard(card) {
+    var txt = card && card.getAttribute('data-copy');
+    if (!txt) return;
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(txt).then(function () {
+        card.classList.add("copied");
+        setTimeout(function(){ card.classList.remove("copied"); }, 900);
+      }).catch(function(){ window.prompt("Copy email:", txt); });
+    } else {
+      var ta = document.createElement("textarea");
+      ta.value = txt; document.body.appendChild(ta);
+      ta.select(); try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta);
+      card.classList.add("copied");
+      setTimeout(function(){ card.classList.remove("copied"); }, 900);
+    }
+  }
+  document.addEventListener("click", function (e) {
+    var card = e.target.closest && e.target.closest(".link-card.copy");
+    if (card) copyTextFromCard(card);
+  });
+  document.addEventListener("keydown", function (e) {
+    var el = e.target && e.target.closest && e.target.closest(".link-card.copy");
+    if ((e.key === "Enter" || e.key === " ") && el) {
+      e.preventDefault(); copyTextFromCard(el);
+    }
+  });
+});
+</script>
+
 </body>
 </html>
