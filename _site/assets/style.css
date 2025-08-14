@@ -7,9 +7,9 @@
   --sidebar-alpha: 0.7;       /* entire left sidebar panel */
   --sidebar-card-alpha: 0.5;  /* each sidebar button */
   --sidebar-photo-alpha: 0.35; /* headshot box */
-  --gol-alpha: 0.28;           /* ↑ make this bigger for brighter cells (0–1) */
+  --gol-alpha: 0.88;           /* ↑ make this bigger for brighter cells (0–1) */
   --gol-cell: 102,170,255;     /* RGB for the cell color */
-  --gol-glow: 10;              /* soft glow size in px */
+  --gol-glow: 25;              /* soft glow size in px */
   --gol-bg: #0b0e14;   
 }
 
