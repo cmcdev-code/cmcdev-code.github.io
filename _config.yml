@@ -1,0 +1,16 @@
+title: Your Name
+url: "https://cmcdev-code.github.io"
+baseurl: ""
+markdown: kramdown
+permalink: pretty
+
+kramdown:
+  input: GFM
+  hard_wrap: false
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+collections:
+  posts:
+    output: true
