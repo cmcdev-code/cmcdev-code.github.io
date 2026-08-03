@@ -68,6 +68,7 @@ textarea {
   width: min(1040px, calc(100% - 40px));
   margin: clamp(22px, 5vw, 58px) auto;
   overflow: hidden;
+  overflow: clip;
   border: 1px solid var(--ink);
   border-radius: 18px;
   background: var(--shell);
@@ -112,6 +113,9 @@ html[data-window-positioned="true"] .site-shell {
 }
 
 .window-bar {
+  position: sticky;
+  top: 0;
+  z-index: 4;
   display: flex;
   align-items: center;
   min-height: 47px;
@@ -290,6 +294,7 @@ html[data-window-positioned="true"] .site-shell {
   display: grid;
   grid-template-columns: 226px minmax(0, 1fr);
   align-items: stretch;
+  background: rgba(239, 233, 220, 0.96);
 }
 
 #sidebar {
