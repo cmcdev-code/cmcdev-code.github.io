@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#d9d1c1">
-  <title>Your Name</title>
+  <title>Prime Domains · Your Name</title>
   <script>
     (function () {
       try {
@@ -35,6 +35,17 @@
   </script>
   <link rel="stylesheet" href="/assets/style.css">
   
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
 </head>
 <body>
   <canvas id="gol" aria-hidden="true"></canvas>
@@ -54,35 +65,50 @@
         </div>
 
         <nav class="site-nav">
-          <a class="sidebar-link" href="/" aria-current="page">home</a>
+          <a class="sidebar-link" href="/">home</a>
           <a class="sidebar-link" href="/papers/">papers</a>
           <a class="sidebar-link" href="/contact/">contact</a>
-          <a class="sidebar-link" href="/blog/">blog</a>
+          <a class="sidebar-link" href="/blog/" aria-current="page">blog</a>
           <a class="sidebar-link" href="/pics/">pics</a>
         </nav>
       </aside>
 
       <main id="main">
-        <h1 id="hi">Hi!</h1>
+        <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">Prime Domains</h1>
+    <p class="post-date">March 29, 2026</p>
+  </header>
 
-<p>I recently completed my bachelor’s degree in Mathematics at Virginia Tech and have now begun my master’s in Applied Data Science at the University of Chicago.</p>
+  <div class="post-content">
+    <p>The result below is from an exercise in the wonderful book <a href="https://bookstore.ams.org/gsm-233"><em>Commutative Algebra</em></a> by Ferretti.</p>
 
-<p>I am currently very interested in Algebra, specifically with a focus that is useful for applied topology. At the moment, I am working through Commutative Algebra by Ferretti. I have greatly enjoyed this book and like many of the exercises, though I wish they were spread throughout the chapters instead of being collected at the end. I also think some of the problems should be more guided; rather than just stating a proposition to prove, they could be broken down into steps (e.g., Step A: prove this, Step B: prove that, finally: conclude the main result).</p>
+<h3 id="theorem">Theorem</h3>
+<p>Let $A$ be a domain. If every prime ideal of $A$ is principal, then $A$ is a Principal Ideal Domain.</p>
 
-<h2 id="education">Education</h2>
-<ul>
-  <li><strong>B.S.</strong> — Virginia Tech, Mathematics</li>
-  <li><strong>M.S.</strong> — Applied Data Science, The University of Chicago</li>
-</ul>
+<p>The proof that I have is adapted from the <a href="https://everysingleproblem.wordpress.com/2019/08/02/cohens-theorem-on-noetherian-rings/">blog</a> by Blum-Smith. This is an excellent proof of Cohen’s Theorem, which follows the same logic used here, though the lemma is instead applied to show that the finite generation of $I+(a)$ and $(I:a)$ implies the finite generation of $I$.</p>
 
-<h2 id="experience">Experience</h2>
-<ul>
-  <li>Software Engineer Intern — Translogistics</li>
-  <li>Research Assistant — Virginia Tech Industrial and Systems Engineering Department</li>
-  <li>Actuary Intern — Symetra Financial</li>
-  <li>Research Assistant — Virginia Tech Mathematics Department</li>
-  <li>Software Engineer Intern — Translogistics</li>
-</ul>
+<p>We will start with a</p>
+
+<h3 id="lemma">Lemma</h3>
+<p>Let $I \subset A$ be an ideal and $a \in A$ be arbitrary. If $I + (a)$ and $(I : a)$ are principal, then $I$ is principal.</p>
+
+<p><strong>Proof:</strong> Let $(x_1) = I + (a)$ and $(x_2) = (I : a)$. We first note that $I \subset I + (a)$ and $I \subset (I : a)$. Let $i \in I$ be arbitrary; then $i = s x_1$ and $a = t x_1$ for some $s, t \in A$. It follows that $sa = s(t x_1) = t(s x_1) = ti \in I$, so $s \in (I : a)$. Thus, $s = r x_2$ for some $r \in A$.</p>
+
+<p>This gives $i = r x_1 x_2$, so we have $I \subset (x_1 x_2)$. Conversely, note that $(I + (a))(I : a) \subset I$. Since $(I + (a))(I : a) = (x_1 x_2)$, we have $(x_1 x_2) = I$, and thus $I$ is principal.</p>
+
+<hr />
+
+<h3 id="proof-of-theorem">Proof of Theorem</h3>
+
+<p>Suppose that $A$ has some ideals that are not principal. Let $\mathcal{M}$ be the set of all such ideals, ordered by inclusion. Take some chain in this set, $P_1 \subset P_2 \subset \dots$, and let $I = \cup_i P_i$. This union of an ascending chain of ideals is itself an ideal.</p>
+
+<p>If $I$ were principal, say $I = (x)$, then for some $P_i$ we would have $x \in P_i$, in which case $P_i = I$. This contradicts the assumption that the $P_i$ are not principal; thus, $I$ is not principal. By Zorn’s Lemma, this set has a maximal element; call it $I$.</p>
+
+<p>By the assumption that $I$ is not principal, we know it is not prime. So, take $a, b \in A$ such that $ab \in I$ with $a, b \notin I$. By the maximality of $I$, we get that $I + (a)$ is principal. By the contrapositive of the lemma, $(I : a)$ must not be principal. Since $I \subset (I : a)$ and $I$ is maximal in $\mathcal{M}$, we must have $I = (I : a)$. But then $b \in (I : a) = I$, which is a contradiction. Thus, $I$ must be prime, so it is principal.</p>
+
+  </div>
+</article>
 
       </main>
     </div>

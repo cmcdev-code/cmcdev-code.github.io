@@ -72,7 +72,7 @@ title: Contact
     </span>
   </a>
 
-  <div class="link-card copy" data-email="cmcdev@uchicago.edu" tabindex="0">
+  <div class="link-card copy" data-copy="cmcdev@uchicago.edu" role="button" tabindex="0" aria-label="Copy UChicago email address">
   <span class="texts">
     <span class="label">Email (UChicago)</span>
     <span class="sub">cmcdev@uchicago.edu</span>
@@ -80,7 +80,7 @@ title: Contact
 </div>
 
 <!-- Email (VT) -->
-<div class="link-card copy" data-email="cmcdev@vt.edu" tabindex="0">
+<div class="link-card copy" data-copy="cmcdev@vt.edu" role="button" tabindex="0" aria-label="Copy Virginia Tech email address">
   <span class="texts">
     <span class="label">Email (VT)</span>
     <span class="sub">cmcdev@vt.edu</span>

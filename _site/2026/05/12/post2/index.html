@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#d9d1c1">
+  <title>Start to Finish a Proof of Eakin-Nagata Theorem · Your Name</title>
+  <script>
+    (function () {
+      try {
+        var stateKey = "siteWindowStateV1";
+        var newWindowKey = "siteNewBrowserWindow";
+        var state = JSON.parse(sessionStorage.getItem(stateKey) || "null") || {};
+        if (sessionStorage.getItem(newWindowKey) === "true") {
+          sessionStorage.removeItem(newWindowKey);
+          state = { mode: "default", left: null, top: null };
+          sessionStorage.setItem(stateKey, JSON.stringify(state));
+        }
+        if (state.mode === "minimized") {
+          state.mode = "default";
+          sessionStorage.setItem(stateKey, JSON.stringify(state));
+        }
+        var modes = ["default", "closed", "maximized"];
+        var mode = modes.indexOf(state.mode) === -1 ? "default" : state.mode;
+        document.documentElement.setAttribute("data-window-mode", mode);
+        if (mode === "default" && typeof state.left === "number" && typeof state.top === "number") {
+          document.documentElement.setAttribute("data-window-positioned", "true");
+          document.documentElement.style.setProperty("--boot-window-left", state.left + "px");
+          document.documentElement.style.setProperty("--boot-window-top", state.top + "px");
+        }
+      } catch (error) {
+        document.documentElement.setAttribute("data-window-mode", "default");
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="/assets/style.css">
+  
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+</head>
+<body>
+  <canvas id="gol" aria-hidden="true"></canvas>
+
+  <div id="container" class="site-shell">
+    <header class="window-bar">
+      <div class="window-controls" aria-label="Window controls">
+        <button class="window-control window-close" type="button" data-window-action="close" aria-label="Close window" title="Close window"></button>
+        <button class="window-control window-maximize" type="button" data-window-action="maximize" aria-label="Maximize window" aria-pressed="false" title="Maximize window"></button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside id="sidebar" aria-label="Site navigation">
+        <div class="sidebar-photo">
+          <img id="random-headshot" src="/assets/headshots-web/IMG_8900.jpg" width="450" height="600" decoding="async" alt="Portrait of Collin McDevitt">
+        </div>
+
+        <nav class="site-nav">
+          <a class="sidebar-link" href="/">home</a>
+          <a class="sidebar-link" href="/papers/">papers</a>
+          <a class="sidebar-link" href="/contact/">contact</a>
+          <a class="sidebar-link" href="/blog/" aria-current="page">blog</a>
+          <a class="sidebar-link" href="/pics/">pics</a>
+        </nav>
+      </aside>
+
+      <main id="main">
+        <article class="post">
+  <header class="post-header">
+    <h1 class="post-title">Start to Finish a Proof of Eakin-Nagata Theorem</h1>
+    <p class="post-date">May 12, 2026</p>
+  </header>
+
+  <div class="post-content">
+    <p>The article is written with the assumption that all rings are commutative and have a unit.</p>
+
+<p>The Eakin-Nagata Theorem is the following</p>
+
+<p>Let $A\subset B$ be rings, with $B$ Noetherian, and assume that $B$ is finitely generated as an $A$-module. Then $A$ is Noetherian as well.</p>
+
+<p>In order to prove this main result we will first prove some other results and reach this as a special case of Formanek’s Theorem. These are the exercises 24-28 from chapter 2 in the book <a href="https://bookstore.ams.org/gsm-233"><em>Commutative Algebra</em></a> by Ferretti.</p>
+
+<h2 id="lemma-prime-maximal-submodule">Lemma (Prime Maximal Submodule)</h2>
+<p>Let $M$ be an $A$-module, $N$ a submodule of $M$ maximal with respect to the condition of not being finitely generated. Let $P=\text{Ann}(M/N)$ then $P$ is prime.</p>
+
+<p><strong>Proof</strong></p>
+
+<p>Suppose $P$ is not prime. Take $a, b \in A$ such that $ab \in P$ but $a, b \notin P$.</p>
+
+<p>Define $L = {m \in M : am \in N}$. Since $a \notin \text{Ann}(M/N)$, the containment $N \subsetneq N + aM$ is proper. By the maximality of $N$, $N + aM$ is finitely generated, say $N + aM = (n_1 + am_1, \dots, n_k + am_k)$.</p>
+
+<p>Since $b \notin \text{Ann}(M/N)$, there is some $m \in M$ such that $bm \notin N$. However, $a(bm) = (ab)m \in N$, so $bm \in L$. Thus $N \subsetneq L$ is proper, and by maximality, $L$ is finitely generated.</p>
+
+<p>Take $n \in N$. Then $n = \sum_{i=1}^k c_i(n_i + am_i)$ for some $c_i \in A$. Rearranging, we get\(n - \sum_{i=1}^k c_i n_i = a \left( \sum_{i=1}^k c_i m_i \right)\)The left side is in $N$, so $\sum c_i m_i \in L$. This implies $N \subseteq (n_1, \dots, n_k) + aL$. Since the other containment is obvious, $N = (n_1, \dots, n_k) + aL$.</p>
+
+<p>Because both $(n_1, \dots, n_k)$ and $L$ are finitely generated, $N$ is finitely generated, which is a contradiction. Thus $P$ is prime.</p>
+
+<h2 id="jothilingams-theorem">Jothilingam’s Theorem</h2>
+
+<p>Let $A$ be a ring, $M$ a finitely generated module such that $P\cdot M$ is finitely generated for all prime ideals $P$ of $A$. Then $M$ is Noetherian.
+<strong>**
+**Proof</strong> From <a href="https://www.researchgate.net/publication/322877999_A_Simple_Proof_of_Cohen's_Theorem"><em>A Simple Proof of Cohen’s Theorem</em></a> by Naghipour.</p>
+
+<p>Suppose $M$ is not Noetherian. Let $\mathcal{M}$ be the family of submodules of $M$ that are not finitely generated. By Zorn’s Lemma, $\mathcal{M}$ has a maximal element $N$. Then $P = \text{Ann}(M/N)$ is prime by the Prime Maximal Submodule Lemma.</p>
+
+<p>Let $M = (m_1, \dots, m_k)$. Then $P = \bigcap_{i=1}^k \text{Ann}(\overline{m}_i)$, where $\overline{m}_i$ is the image of $m_i$ in $M/N$. Since $P$ is prime, $P = \text{Ann}(\overline{m}_i)$ for some $i$.</p>
+
+<p>Consider the submodule $N + (m_i)$. Since $m_i \notin N$, we have a strict containment $N \subsetneq N + (m_i)$. By the maximality of $N$, $N + (m_i)$ is finitely generated:
+\(N + (m_i) = (n_1 + a_1 m_i, \dots, n_j + a_j m_i)\)</p>
+
+<p>where $n_l \in N$ and $a_l \in A$.</p>
+
+<p>Take $n \in N \subset N + (m_i)$ and write $n = \sum_{l=1}^j b_l(n_l + a_l m_i)$. Rearranging gives:</p>
+
+\[n - \sum_{l=1}^j b_l n_l = \left( \sum_{l=1}^j b_l a_l \right) m_i\]
+
+<p>This yields the containment $N \subseteq (n_1, \dots, n_j) + Pm_i$ (the other containment is obvious). Thus we have:</p>
+
+\[N = (n_1, \dots, n_j) + Pm_i \subseteq (n_1, \dots, n_j) + PM \subseteq N\]
+
+<p>By hypothesis, $PM$ is finitely generated, which implies $N$ is finitely generated.</p>
+
+<h2 id="lemma-ascending-chain--ideals">Lemma Ascending Chain &amp; Ideals</h2>
+<p>Let $M$ be a finitely generated $A$ module, \(E_M:= \{I\cdot M: I\subset A\text{ and }I \text{ is an ideal}\}.\) Then submodules of $E_M$ are finitely generated if and only if $E_M$ has the ascending chain condition.</p>
+
+<p><strong>Proof</strong></p>
+
+<p>$(\rightarrow)$</p>
+
+<p>Let $I_1 M \subseteq I_2 M \subseteq \dots$ be an ascending chain in $E_M$. Let $N = \bigcup I_i M$. Define $L = {a \in A : aM \subseteq N}$. Clearly $I_j \subseteq L$ for all $j$, so $I_j M \subseteq LM$. Thus $N = \bigcup I_j M \subseteq LM$. Since $LM \subseteq N$ by definition of $L$, we have $N = LM \in E_M$. By hypothesis, $N$ is finitely generated. Since the generators of $N$ must eventually appear in some $I_k M$, the chain is stationary.</p>
+
+<p>$(\leftarrow)$</p>
+
+<p>Assume $E_M$ has the ACC. For any $IM \in E_M$, consider the family:</p>
+
+\[\mathcal{F} = \{JM : J \subseteq I \text{ is a finitely generated ideal}\}\]
+
+<p>Since $0 \in \mathcal{F}$, it is non-empty. By the ACC on $E_M$, $\mathcal{F}$ contains a maximal element $J_0 M$. Suppose $J_0 M \subsetneq IM$. Then there exists some $\sum_{}a_i m_i \in IM \setminus J_0 M$ for $a_i \in I$. Let $J_1 = J_0 + (a_1,\dots , a_k )$. Then $J_1$ is finitely generated and $J_1 \subseteq I$, so $J_1 M \in \mathcal{F}$. However, $J_0 M \subsetneq J_1 M$, contradicting maximality. Thus $IM = J_0 M$. Since $J_0$ and $M$ are finitely generated, $IM$ is finitely generated.</p>
+
+<h2 id="formaneks-theorem">Formanek’s Theorem</h2>
+<p>Let $A$ be a ring, $M$ a finitely generated, faithful $A$-module. Let $E_M$ be as defined above. If $E_M$ satisfies the ascending chain condition then $M$ is Noetherian, and $A$ is Noetherian as well.</p>
+
+<p><strong>Proof</strong></p>
+
+<p>Let $P$ be a prime ideal of $A$. Since $PM \in E_M$, the Ascending Chain Lemma implies that $PM$ is finitely generated. By Jothilingam’s Theorem, since $M$ is finitely generated and $PM$ is finitely generated for all prime ideals $P$, $M$ is Noetherian.</p>
+
+<p>Let $M =  (m_1, \dots, m_n )$. Since $M$ is Noetherian, the direct sum $M^n$ is also a Noetherian $A$-module. Define the $A$-module homomorphism:</p>
+
+\[\phi : A \to M^n \quad \text{where} \quad \phi(a) = (am_1, \dots, am_n)\]
+
+<p>The kernel of this map is:</p>
+
+\[\ker \phi = \bigcap_{i=1}^n \text{Ann}(m_i) = \text{Ann}_A(M)\]
+
+<p>Because $M$ is faithful, $\text{Ann}_A(M) = 0$, making $\phi$ injective. Thus, $A \cong \phi(A)$ as $A$-modules. Since $\phi(A)$ is a submodule of the Noetherian module $M^n$, it is itself Noetherian. Since $A$ is Noetherian as a module over itself, it follows that $A$ is a Noetherian ring.</p>
+
+<p>The main result is</p>
+<h1 id="eakin-nagata-theorem">Eakin-Nagata Theorem</h1>
+<p>Let $A\subset B$ be rings, with $B$ Noetherian, and assume that $B$ is finitely generated as $A$-module. Then $A$ is Noetherian as well.</p>
+
+<p><strong>Proof</strong></p>
+
+<p>First, $\text{Ann}_A(B) = 0$. Take $a \in \text{Ann}_A(B)$, then $a \cdot 1 = 0$, giving $a = 0$. Thus $B$ is faithful as an $A$-module.</p>
+
+<p>Define $E_B = {IB : I \subset A \text{ is an ideal}}$. For any ideal $I \subset A$, $IB$ is an ideal of $B$. Since $B$ is Noetherian, ascending chains in $B$ stabilize, so $E_B$ satisfies the ascending chain condition. By Formanek’s Theorem, $A$ is Noetherian.</p>
+
+  </div>
+</article>
+
+      </main>
+    </div>
+
+  </div>
+  <button class="browser-launcher" id="browser-launcher" type="button" aria-label="Open browser" title="Double-click to open browser">
+    <span class="internet-browser-icon" aria-hidden="true">
+      <span class="internet-globe-lines"></span>
+    </span>
+  </button>
+
+  <script>
+    window.siteHeadshots = [
+    
+    
+      
+        
+        
+          "/assets/headshots-web/IMG_0714.jpg"
+          
+        
+      
+    
+      
+        
+        
+          ,"/assets/headshots-web/IMG_1155.jpg"
+          
+        
+      
+    
+      
+        
+        
+          ,"/assets/headshots-web/IMG_1435.jpg"
+          
+        
+      
+    
+      
+        
+        
+          ,"/assets/headshots-web/IMG_1673.jpg"
+          
+        
+      
+    
+      
+        
+        
+          ,"/assets/headshots-web/IMG_2497.jpg"
+          
+        
+      
+    
+      
+        
+        
+          ,"/assets/headshots-web/IMG_4087.jpg"
+          
+        
+      
+    
+      
+        
+        
+          ,"/assets/headshots-web/IMG_8797.jpg"
+          
+        
+      
+    
+      
+        
+        
+          ,"/assets/headshots-web/IMG_8900.jpg"
+          
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    ];
+  </script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>
