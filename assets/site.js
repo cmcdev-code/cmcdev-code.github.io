@@ -64,6 +64,7 @@
     var closeButton = document.querySelector('[data-window-action="close"]');
     var maximizeButton = document.querySelector('[data-window-action="maximize"]');
     var browserLauncher = document.getElementById("browser-launcher");
+    var compactWindowQuery = window.matchMedia && window.matchMedia("(max-width: 760px)");
     var windowMode = "default";
     var windowStateKey = "siteWindowStateV1";
     var newBrowserWindowKey = "siteNewBrowserWindow";
@@ -98,7 +99,23 @@
       try { sessionStorage.setItem(windowStateKey, JSON.stringify(windowState)); } catch (error) {}
     }
 
+    function isCompactWindow() {
+      return Boolean(compactWindowQuery && compactWindowQuery.matches);
+    }
+
+    function clearAppliedPosition() {
+      if (!siteWindow) return;
+      siteWindow.classList.remove("is-positioned");
+      siteWindow.style.left = "";
+      siteWindow.style.top = "";
+      document.documentElement.removeAttribute("data-window-positioned");
+    }
+
     function applySavedPosition() {
+      if (isCompactWindow()) {
+        clearAppliedPosition();
+        return;
+      }
       if (!siteWindow || windowState.left === null || windowState.top === null) return;
       var rect = siteWindow.getBoundingClientRect();
       var maxLeft = Math.max(8, window.innerWidth - rect.width - 8);
@@ -126,10 +143,7 @@
       if (nextMode === "default") {
         applySavedPosition();
       } else {
-        siteWindow.classList.remove("is-positioned");
-        siteWindow.style.left = "";
-        siteWindow.style.top = "";
-        document.documentElement.removeAttribute("data-window-positioned");
+        clearAppliedPosition();
       }
 
       if (maximizeButton) maximizeButton.setAttribute("aria-pressed", nextMode === "maximized" ? "true" : "false");
@@ -169,7 +183,9 @@
     if (browserLauncher) {
       browserLauncher.addEventListener("click", function (event) {
         browserLauncher.classList.add("is-selected");
-        if (event.detail === 0 || event.detail >= 2) activateBrowserLauncher();
+        if (event.detail === 0 || event.detail >= 2 || (isCompactWindow() && event.detail === 1)) {
+          activateBrowserLauncher();
+        }
       });
 
       document.addEventListener("click", function (event) {
@@ -192,7 +208,7 @@
 
     if (windowBar && siteWindow) {
       windowBar.addEventListener("pointerdown", function (event) {
-        if (event.button !== 0 || windowMode !== "default") return;
+        if (event.button !== 0 || windowMode !== "default" || isCompactWindow()) return;
         if (event.target.closest && event.target.closest(".window-control")) return;
         var rect = siteWindow.getBoundingClientRect();
         draggingWindow = true;
@@ -505,7 +521,11 @@
 
     setup();
     draw();
-    window.addEventListener("resize", handleResize);
+    var canvasResizeTimer = null;
+    window.addEventListener("resize", function () {
+      window.clearTimeout(canvasResizeTimer);
+      canvasResizeTimer = window.setTimeout(handleResize, 120);
+    });
     window.addEventListener("pagehide", saveState);
     window.requestAnimationFrame(loop);
   });

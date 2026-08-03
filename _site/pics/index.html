@@ -22,8 +22,9 @@
         }
         var modes = ["default", "closed", "maximized"];
         var mode = modes.indexOf(state.mode) === -1 ? "default" : state.mode;
+        var compactWindow = window.matchMedia && window.matchMedia("(max-width: 760px)").matches;
         document.documentElement.setAttribute("data-window-mode", mode);
-        if (mode === "default" && typeof state.left === "number" && typeof state.top === "number") {
+        if (!compactWindow && mode === "default" && typeof state.left === "number" && typeof state.top === "number") {
           document.documentElement.setAttribute("data-window-positioned", "true");
           document.documentElement.style.setProperty("--boot-window-left", state.left + "px");
           document.documentElement.style.setProperty("--boot-window-top", state.top + "px");

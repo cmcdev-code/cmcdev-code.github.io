@@ -219,6 +219,7 @@ html[data-window-mode="maximized"] body {
   background: transparent;
   transform: translate(-50%, -50%);
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .browser-launcher:hover,
@@ -691,23 +692,104 @@ th {
 }
 
 @media (max-width: 760px) {
-  .site-shell {
-    width: min(100% - 22px, 620px);
-    margin: 12px auto 24px;
-    border-radius: 14px;
-    box-shadow: 4px 5px 0 rgba(60, 54, 44, 0.2);
+  html {
+    scrollbar-gutter: auto;
   }
 
-  .site-shell.is-positioned {
-    max-width: calc(100vw - 12px);
+  body {
+    min-height: 100dvh;
+  }
+
+  .site-shell {
+    width: min(calc(100% - 16px), 620px);
+    margin: 8px auto 16px;
+    border-radius: 12px;
+    box-shadow: 3px 4px 0 rgba(60, 54, 44, 0.18);
+  }
+
+  .site-shell.is-positioned,
+  html[data-window-positioned="true"] .site-shell {
+    position: relative;
+    top: auto !important;
+    left: auto !important;
+    max-width: none;
+    margin: 8px auto 16px;
+  }
+
+  .site-shell.is-maximized,
+  html[data-window-mode="maximized"] .site-shell {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .window-bar {
+    min-height: 50px;
+    padding: 0 8px;
+    cursor: default;
+    touch-action: manipulation;
+  }
+
+  .window-controls {
+    gap: 2px;
+  }
+
+  .window-control {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    background: transparent;
+    line-height: 32px;
+    touch-action: manipulation;
+  }
+
+  .window-control::after {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    z-index: 1;
+    border: 1px solid rgba(38, 36, 31, 0.55);
+    border-radius: 50%;
+  }
+
+  .window-close::after {
+    background: var(--clay);
+  }
+
+  .window-maximize::after {
+    background: var(--sage);
+  }
+
+  .window-controls:hover .window-control::before,
+  .window-control:focus-visible::before {
+    z-index: 2;
   }
 
   .workspace {
     display: block;
   }
 
+  .site-shell.is-maximized .workspace,
+  html[data-window-mode="maximized"] .site-shell .workspace {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .site-shell.is-maximized #sidebar,
+  .site-shell.is-maximized #main,
+  html[data-window-mode="maximized"] .site-shell #sidebar,
+  html[data-window-mode="maximized"] .site-shell #main {
+    overflow: visible;
+  }
+
   #sidebar {
-    padding: 14px;
+    padding: 10px;
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
@@ -727,15 +809,30 @@ th {
 
   .sidebar-link {
     justify-content: center;
-    min-height: 34px;
-    padding: 6px 4px;
+    min-height: 38px;
+    padding: 7px 4px;
     font-size: 10px;
+    touch-action: manipulation;
   }
 
   #main {
-    min-height: 52vh;
-    padding: clamp(25px, 7vw, 42px);
+    min-height: 52dvh;
+    padding: clamp(24px, 7vw, 40px);
     border-left: 0;
+    overflow-wrap: anywhere;
+  }
+
+  #main img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  #main table,
+  mjx-container[display="true"] {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   h1 {
