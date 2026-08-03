@@ -119,9 +119,9 @@
       if (!siteWindow || windowState.left === null || windowState.top === null) return;
       var rect = siteWindow.getBoundingClientRect();
       var maxLeft = Math.max(8, window.innerWidth - rect.width - 8);
-      var maxTop = Math.max(8, window.innerHeight - rect.height - 8);
+      var maxTop = Math.max(8, window.scrollY + window.innerHeight - 48);
       var nextLeft = Math.min(Math.max(8, windowState.left), maxLeft);
-      var nextTop = Math.min(Math.max(8, windowState.top), maxTop);
+      var nextTop = Math.min(Math.max(window.scrollY + 8, windowState.top), maxTop);
       siteWindow.classList.add("is-positioned");
       siteWindow.style.left = nextLeft + "px";
       siteWindow.style.top = nextTop + "px";
@@ -215,11 +215,11 @@
         dragOffsetX = event.clientX - rect.left;
         dragOffsetY = event.clientY - rect.top;
         siteWindow.classList.add("is-positioned");
-        siteWindow.style.left = rect.left + "px";
-        siteWindow.style.top = rect.top + "px";
+        siteWindow.style.left = rect.left + window.scrollX + "px";
+        siteWindow.style.top = rect.top + window.scrollY + "px";
         document.documentElement.setAttribute("data-window-positioned", "true");
-        document.documentElement.style.setProperty("--boot-window-left", rect.left + "px");
-        document.documentElement.style.setProperty("--boot-window-top", rect.top + "px");
+        document.documentElement.style.setProperty("--boot-window-left", rect.left + window.scrollX + "px");
+        document.documentElement.style.setProperty("--boot-window-top", rect.top + window.scrollY + "px");
         windowBar.classList.add("is-dragging");
         windowBar.setPointerCapture(event.pointerId);
       });
@@ -227,8 +227,11 @@
       windowBar.addEventListener("pointermove", function (event) {
         if (!draggingWindow) return;
         var rect = siteWindow.getBoundingClientRect();
-        var nextLeft = Math.min(Math.max(8, event.clientX - dragOffsetX), Math.max(8, window.innerWidth - rect.width - 8));
-        var nextTop = Math.min(Math.max(8, event.clientY - dragOffsetY), Math.max(8, window.innerHeight - rect.height - 8));
+        var nextLeft = Math.min(Math.max(8, event.clientX + window.scrollX - dragOffsetX), Math.max(8, window.innerWidth - rect.width - 8));
+        var nextTop = Math.min(
+          Math.max(window.scrollY + 8, event.clientY + window.scrollY - dragOffsetY),
+          Math.max(window.scrollY + 8, window.scrollY + window.innerHeight - 48)
+        );
         siteWindow.style.left = nextLeft + "px";
         siteWindow.style.top = nextTop + "px";
         document.documentElement.style.setProperty("--boot-window-left", nextLeft + "px");
@@ -241,8 +244,8 @@
         windowBar.classList.remove("is-dragging");
         if (windowBar.hasPointerCapture(event.pointerId)) windowBar.releasePointerCapture(event.pointerId);
         var rect = siteWindow.getBoundingClientRect();
-        windowState.left = Math.round(rect.left);
-        windowState.top = Math.round(rect.top);
+        windowState.left = Math.round(rect.left + window.scrollX);
+        windowState.top = Math.round(rect.top + window.scrollY);
         saveWindowState();
       }
 

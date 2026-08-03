@@ -86,13 +86,13 @@ html[data-window-mode="closed"] .site-shell {
 
 .site-shell.is-maximized,
 html[data-window-mode="maximized"] .site-shell {
-  position: fixed;
-  inset: 8px;
-  display: flex;
-  width: auto;
-  height: calc(100vh - 16px);
-  margin: 0;
-  flex-direction: column;
+  position: relative;
+  inset: auto;
+  display: block;
+  width: calc(100% - 16px);
+  height: auto;
+  min-height: calc(100dvh - 16px);
+  margin: 8px auto;
   border-radius: 12px;
   box-shadow: 4px 5px 0 rgba(60, 54, 44, 0.18);
   resize: none;
@@ -100,49 +100,15 @@ html[data-window-mode="maximized"] .site-shell {
 
 .site-shell.is-positioned,
 html[data-window-positioned="true"] .site-shell {
-  position: fixed;
-  display: flex;
-  max-height: calc(100dvh - 16px);
+  position: absolute;
+  display: block;
+  max-height: none;
   margin: 0;
-  flex-direction: column;
 }
 
 html[data-window-positioned="true"] .site-shell {
   top: var(--boot-window-top);
   left: var(--boot-window-left);
-}
-
-.site-shell.is-maximized .workspace,
-html[data-window-mode="maximized"] .site-shell .workspace {
-  min-height: 0;
-  flex: 1;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
-}
-
-.site-shell.is-positioned .workspace,
-html[data-window-positioned="true"] .site-shell .workspace {
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
-}
-
-.site-shell.is-maximized #sidebar,
-.site-shell.is-maximized #main,
-html[data-window-mode="maximized"] .site-shell #sidebar,
-html[data-window-mode="maximized"] .site-shell #main {
-  min-height: 0;
-  overflow: visible;
-}
-
-body.window-is-maximized,
-html[data-window-mode="maximized"],
-html[data-window-mode="maximized"] body {
-  overflow: hidden;
 }
 
 .window-bar {
@@ -743,10 +709,11 @@ th {
 
   .site-shell.is-maximized,
   html[data-window-mode="maximized"] .site-shell {
-    position: fixed;
-    inset: 0;
+    position: relative;
+    inset: auto;
     width: 100%;
-    height: 100dvh;
+    height: auto;
+    min-height: 100dvh;
     margin: 0;
     border: 0;
     border-radius: 0;
@@ -797,20 +764,6 @@ th {
 
   .workspace {
     display: block;
-  }
-
-  .site-shell.is-maximized .workspace,
-  html[data-window-mode="maximized"] .site-shell .workspace {
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .site-shell.is-maximized #sidebar,
-  .site-shell.is-maximized #main,
-  html[data-window-mode="maximized"] .site-shell #sidebar,
-  html[data-window-mode="maximized"] .site-shell #main {
-    overflow: visible;
   }
 
   #sidebar {
