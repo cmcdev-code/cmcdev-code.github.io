@@ -101,7 +101,10 @@ html[data-window-mode="maximized"] .site-shell {
 .site-shell.is-positioned,
 html[data-window-positioned="true"] .site-shell {
   position: fixed;
+  display: flex;
+  max-height: calc(100dvh - 16px);
   margin: 0;
+  flex-direction: column;
 }
 
 html[data-window-positioned="true"] .site-shell {
@@ -113,6 +116,19 @@ html[data-window-positioned="true"] .site-shell {
 html[data-window-mode="maximized"] .site-shell .workspace {
   min-height: 0;
   flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+.site-shell.is-positioned .workspace,
+html[data-window-positioned="true"] .site-shell .workspace {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .site-shell.is-maximized #sidebar,
@@ -120,7 +136,7 @@ html[data-window-mode="maximized"] .site-shell .workspace {
 html[data-window-mode="maximized"] .site-shell #sidebar,
 html[data-window-mode="maximized"] .site-shell #main {
   min-height: 0;
-  overflow-y: auto;
+  overflow: visible;
 }
 
 body.window-is-maximized,
@@ -712,8 +728,17 @@ th {
     position: relative;
     top: auto !important;
     left: auto !important;
+    display: block;
     max-width: none;
+    max-height: none;
     margin: 8px auto 16px;
+  }
+
+  .site-shell.is-positioned .workspace,
+  html[data-window-positioned="true"] .site-shell .workspace {
+    overflow: visible;
+    overscroll-behavior: auto;
+    touch-action: auto;
   }
 
   .site-shell.is-maximized,
