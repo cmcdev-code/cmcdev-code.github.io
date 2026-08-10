@@ -34,7 +34,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="{{ "/assets/style.css" | relative_url }}?v=20260803-2309">
+  <link rel="stylesheet" href="{{ "/assets/style.css" | relative_url }}?v=20260810-1">
   {% if page.layout == "post" %}
   <script>
     window.MathJax = {
@@ -71,6 +71,7 @@
           <a class="sidebar-link" href="{{ "/contact/" | relative_url }}"{% if page.url contains "/contact/" %} aria-current="page"{% endif %}>contact</a>
           <a class="sidebar-link" href="{{ "/blog/" | relative_url }}"{% if page.url contains "/blog/" or page.layout == "post" %} aria-current="page"{% endif %}>blog</a>
           <a class="sidebar-link" href="{{ "/pics/" | relative_url }}"{% if page.url contains "/pics/" %} aria-current="page"{% endif %}>pics</a>
+          <a class="sidebar-link" href="{{ "/dtree/" | relative_url }}"{% if page.url contains "/dtree/" %} aria-current="page"{% endif %}>d-tree</a>
         </nav>
       </aside>
 
@@ -100,6 +101,9 @@
     {% endfor %}
     ];
   </script>
-  <script src="{{ "/assets/site.js" | relative_url }}?v=20260803-2309"></script>
+  <script src="{{ "/assets/site.js" | relative_url }}?v=20260810-1"></script>
+  {% if page.dtree_lab %}
+  <script src="{{ "/assets/dtree.js" | relative_url }}?v=20260810-1"></script>
+  {% endif %}
 </body>
 </html>
