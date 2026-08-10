@@ -34,7 +34,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="{{ "/assets/style.css" | relative_url }}?v=20260810-1">
+  <link rel="stylesheet" href="{{ "/assets/style.css" | relative_url }}?v=20260810-2">
   {% if page.layout == "post" %}
   <script>
     window.MathJax = {
@@ -71,7 +71,6 @@
           <a class="sidebar-link" href="{{ "/contact/" | relative_url }}"{% if page.url contains "/contact/" %} aria-current="page"{% endif %}>contact</a>
           <a class="sidebar-link" href="{{ "/blog/" | relative_url }}"{% if page.url contains "/blog/" or page.layout == "post" %} aria-current="page"{% endif %}>blog</a>
           <a class="sidebar-link" href="{{ "/pics/" | relative_url }}"{% if page.url contains "/pics/" %} aria-current="page"{% endif %}>pics</a>
-          <a class="sidebar-link" href="{{ "/dtree/" | relative_url }}"{% if page.url contains "/dtree/" %} aria-current="page"{% endif %}>d-tree</a>
         </nav>
       </aside>
 
@@ -81,11 +80,33 @@
     </div>
 
   </div>
-  <button class="browser-launcher" id="browser-launcher" type="button" aria-label="Open browser" title="Double-click to open browser">
-    <span class="internet-browser-icon" aria-hidden="true">
-      <span class="internet-globe-lines"></span>
-    </span>
-  </button>
+  <div class="desktop-launchers" role="group" aria-label="Desktop applications">
+    <button class="desktop-launcher browser-launcher" id="browser-launcher" type="button" aria-label="Open browser" title="Double-click to open browser">
+      <span class="internet-browser-icon" aria-hidden="true">
+        <span class="internet-globe-lines"></span>
+      </span>
+      <span class="desktop-launcher-label">internet</span>
+    </button>
+
+    <button class="desktop-launcher dtree-launcher" id="dtree-launcher" type="button" data-href="{{ "/dtree/" | relative_url }}" aria-label="Open d-tree lab" title="Double-click to open d-tree lab">
+      <span class="dtree-app-icon" aria-hidden="true">
+        <i class="dtree-app-edge dtree-app-edge-1"></i>
+        <i class="dtree-app-edge dtree-app-edge-2"></i>
+        <i class="dtree-app-edge dtree-app-edge-3"></i>
+        <i class="dtree-app-edge dtree-app-edge-4"></i>
+        <i class="dtree-app-edge dtree-app-edge-5"></i>
+        <i class="dtree-app-edge dtree-app-edge-6"></i>
+        <i class="dtree-app-node dtree-app-node-1"></i>
+        <i class="dtree-app-node dtree-app-node-2"></i>
+        <i class="dtree-app-node dtree-app-node-3"></i>
+        <i class="dtree-app-node dtree-app-node-4"></i>
+        <i class="dtree-app-node dtree-app-node-5"></i>
+        <i class="dtree-app-node dtree-app-node-6"></i>
+        <i class="dtree-app-node dtree-app-node-7"></i>
+      </span>
+      <span class="desktop-launcher-label">d-tree lab</span>
+    </button>
+  </div>
 
   <script>
     window.siteHeadshots = [
@@ -101,9 +122,9 @@
     {% endfor %}
     ];
   </script>
-  <script src="{{ "/assets/site.js" | relative_url }}?v=20260810-1"></script>
+  <script src="{{ "/assets/site.js" | relative_url }}?v=20260810-2"></script>
   {% if page.dtree_lab %}
-  <script src="{{ "/assets/dtree.js" | relative_url }}?v=20260810-1"></script>
+  <script src="{{ "/assets/dtree.js" | relative_url }}?v=20260810-2"></script>
   {% endif %}
 </body>
 </html>

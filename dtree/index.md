@@ -58,6 +58,14 @@ dtree_lab: true
       <span><i class="dtree-swatch dtree-swatch-p" aria-hidden="true"></i><strong>P</strong> purple</span>
     </div>
 
+    <div class="dtree-zoom" aria-label="Tree zoom controls">
+      <span>zoom</span>
+      <button id="dtree-zoom-out" type="button" aria-label="Zoom out" title="Zoom out">−</button>
+      <output id="dtree-zoom-value" aria-live="polite">100%</output>
+      <button id="dtree-zoom-in" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+      <button id="dtree-zoom-fit" class="dtree-zoom-fit" type="button">fit</button>
+    </div>
+
     <div class="dtree-canvas-wrap" aria-label="Horizontally scrollable d-tree drawing">
       <svg id="dtree-canvas" role="group" aria-labelledby="dtree-svg-title dtree-svg-description" preserveAspectRatio="xMidYMid meet">
         <title id="dtree-svg-title">A rooted d-tree</title>
@@ -81,6 +89,7 @@ dtree_lab: true
     <div class="dtree-editor-toolbar">
       <label for="dtree-example">example</label>
       <select id="dtree-example">
+        <option value="recursion">recursive subtree</option>
         <option value="levels">color by level</option>
         <option value="greedy">greedy coloring</option>
         <option value="leaves">leaves and internal vertices</option>
@@ -91,20 +100,27 @@ dtree_lab: true
 
     <div class="dtree-code-layout">
       <div class="dtree-editor-column">
-        <label class="dtree-editor-label" for="dtree-editor">JavaScript</label>
+        <label class="dtree-editor-label" for="dtree-editor">JavaScript · define functions, then run them</label>
         <textarea id="dtree-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" data-gramm="false" aria-describedby="dtree-editor-hint">reset();
 
-const palette = [R, G, B, Y, P];
+const palette = [R, B, G, Y, P];
 
-for (const vertex of bfs()) {
-  color(palette[depth(vertex) % palette.length], vertex);
-  await sleep(40);
-}</textarea>
-        <p id="dtree-editor-hint" class="dtree-keyboard-hint"><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>Enter</kbd> to run · <kbd>Tab</kbd> to indent</p>
+async function colorSubtree(vertex, level = 0) {
+  color(palette[level % palette.length], vertex);
+  await sleep(45);
+
+  for (const child of children(vertex)) {
+    await colorSubtree(child, level + 1);
+  }
+}
+
+await colorSubtree(ROOT);</textarea>
+        <p id="dtree-editor-hint" class="dtree-keyboard-hint">Normal and <code>async</code> functions can call themselves recursively · <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>Enter</kbd> to run · <kbd>Tab</kbd> to indent</p>
       </div>
 
       <aside class="dtree-helper-card" aria-labelledby="dtree-helper-title">
         <h3 id="dtree-helper-title">helper functions</h3>
+        <p class="dtree-function-note"><strong>Custom functions and recursion are supported.</strong> Use an <code>async function</code> when it contains <code>await sleep(...)</code>.</p>
         <dl>
           <div><dt><code>color(R, vertex)</code></dt><dd>color one vertex</dd></div>
           <div><dt><code>clear(vertex)</code></dt><dd>clear one vertex</dd></div>

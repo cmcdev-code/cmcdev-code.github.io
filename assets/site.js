@@ -64,6 +64,8 @@
     var closeButton = document.querySelector('[data-window-action="close"]');
     var maximizeButton = document.querySelector('[data-window-action="maximize"]');
     var browserLauncher = document.getElementById("browser-launcher");
+    var dtreeLauncher = document.getElementById("dtree-launcher");
+    var desktopLaunchers = document.querySelectorAll(".desktop-launcher");
     var compactWindowQuery = window.matchMedia && window.matchMedia("(max-width: 760px)");
     var windowMode = "default";
     var windowStateKey = "siteWindowStateV1";
@@ -180,20 +182,45 @@
       try { sessionStorage.removeItem(newBrowserWindowKey); } catch (error) {}
     }
 
+    function selectDesktopLauncher(selected) {
+      Array.prototype.forEach.call(desktopLaunchers, function (launcher) {
+        launcher.classList.toggle("is-selected", launcher === selected);
+      });
+    }
+
+    function activateDtreeLauncher() {
+      if (!dtreeLauncher) return;
+      var destination = dtreeLauncher.getAttribute("data-href");
+      if (!destination) return;
+
+      if (windowMode === "closed") setWindowMode("default");
+      var destinationUrl = new URL(destination, window.location.href);
+      if (destinationUrl.pathname === window.location.pathname) return;
+      window.location.assign(destinationUrl.href);
+    }
+
     if (browserLauncher) {
       browserLauncher.addEventListener("click", function (event) {
-        browserLauncher.classList.add("is-selected");
+        selectDesktopLauncher(browserLauncher);
         if (event.detail === 0 || event.detail >= 2 || (isCompactWindow() && event.detail === 1)) {
           activateBrowserLauncher();
         }
       });
+    }
 
-      document.addEventListener("click", function (event) {
-        if (event.target !== browserLauncher && !browserLauncher.contains(event.target)) {
-          browserLauncher.classList.remove("is-selected");
+    if (dtreeLauncher) {
+      dtreeLauncher.addEventListener("click", function (event) {
+        selectDesktopLauncher(dtreeLauncher);
+        if (event.detail === 0 || event.detail >= 2 || (isCompactWindow() && event.detail === 1)) {
+          activateDtreeLauncher();
         }
       });
     }
+
+    document.addEventListener("click", function (event) {
+      var launcher = event.target.closest && event.target.closest(".desktop-launcher");
+      if (!launcher) selectDesktopLauncher(null);
+    });
 
     if (windowBar) {
       windowBar.addEventListener("dblclick", function (event) {

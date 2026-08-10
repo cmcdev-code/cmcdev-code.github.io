@@ -28,13 +28,21 @@
     var status = document.getElementById("dtree-status");
     var output = document.getElementById("dtree-output");
     var clearOutputButton = document.getElementById("dtree-clear-output");
+    var zoomOutButton = document.getElementById("dtree-zoom-out");
+    var zoomInButton = document.getElementById("dtree-zoom-in");
+    var zoomFitButton = document.getElementById("dtree-zoom-fit");
+    var zoomValue = document.getElementById("dtree-zoom-value");
 
-    if (!svg || !edgesLayer || !nodesLayer || !editor || !runButton) return;
+    if (!svg || !edgesLayer || !nodesLayer || !editor || !runButton ||
+        !zoomOutButton || !zoomInButton || !zoomFitButton || !zoomValue) return;
 
     var SVG_NAMESPACE = "http://www.w3.org/2000/svg";
     var STORAGE_KEY = "dtreeLabCodeV1";
     var MAX_VERTICES = 160;
     var RUN_LIMIT_MS = 15000;
+    var MIN_ZOOM = 0.1;
+    var MAX_ZOOM = 2;
+    var ZOOM_STEP = 0.1;
     var COLORS = {
       R: "#a96f5c",
       G: "#7d8b6a",
@@ -52,6 +60,23 @@
       DEFAULT: "uncolored"
     };
     var EXAMPLES = {
+      recursion: [
+        "reset();",
+        "",
+        "const palette = [R, B, G, Y, P];",
+        "",
+        "async function colorSubtree(vertex, level = 0) {",
+        "  color(palette[level % palette.length], vertex);",
+        "  await sleep(45);",
+        "",
+        "  for (const child of children(vertex)) {",
+        "    await colorSubtree(child, level + 1);",
+        "  }",
+        "}",
+        "",
+        "await colorSubtree(ROOT);",
+        "log(\"Recursive traversal complete.\");"
+      ].join("\n"),
       levels: [
         "reset();",
         "",
@@ -101,6 +126,8 @@
     };
 
     var graph = null;
+    var graphLayout = null;
+    var zoomLevel = 1;
     var nodeElements = [];
     var selectedVertex = null;
     var keyboardVertex = 0;
@@ -201,6 +228,42 @@
       return { width: width, height: height, positions: positions };
     }
 
+    function setZoom(nextZoom, preserveCenter) {
+      if (!graphLayout) return;
+      var previousWidth = canvasWrap ? canvasWrap.scrollWidth : graphLayout.width * zoomLevel;
+      var previousCenter = canvasWrap
+        ? canvasWrap.scrollLeft + canvasWrap.clientWidth / 2
+        : previousWidth / 2;
+      var centerRatio = previousWidth > 0 ? previousCenter / previousWidth : 0.5;
+
+      zoomLevel = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, nextZoom));
+      zoomLevel = Math.round(zoomLevel * 100) / 100;
+      svg.style.setProperty("--dtree-svg-width", graphLayout.width * zoomLevel + "px");
+      svg.style.setProperty("--dtree-svg-height", graphLayout.height * zoomLevel + "px");
+
+      var percentage = Math.round(zoomLevel * 100) + "%";
+      zoomValue.value = percentage;
+      zoomValue.textContent = percentage;
+      zoomOutButton.disabled = zoomLevel <= MIN_ZOOM;
+      zoomInButton.disabled = zoomLevel >= MAX_ZOOM;
+
+      if (canvasWrap) {
+        window.requestAnimationFrame(function () {
+          var targetCenter = preserveCenter
+            ? centerRatio * canvasWrap.scrollWidth
+            : canvasWrap.scrollWidth / 2;
+          canvasWrap.scrollLeft = Math.max(0, targetCenter - canvasWrap.clientWidth / 2);
+          canvasWrap.scrollTop = 0;
+        });
+      }
+    }
+
+    function fitTree() {
+      if (!graphLayout || !canvasWrap) return;
+      var availableWidth = Math.max(1, canvasWrap.clientWidth - 20);
+      setZoom(Math.min(1, availableWidth / graphLayout.width), false);
+    }
+
     function vertexDescription(vertexId) {
       var node = graph.nodes[vertexId];
       var colorToken = nodeElements[vertexId] ? nodeElements[vertexId].color : "DEFAULT";
@@ -215,6 +278,8 @@
 
     function renderGraph() {
       var layout = layoutGraph(graph);
+      graphLayout = layout;
+      zoomLevel = 1;
       emptyElement(edgesLayer);
       emptyElement(nodesLayer);
       nodeElements = new Array(graph.nodes.length);
@@ -222,8 +287,6 @@
       keyboardVertex = 0;
 
       svg.setAttribute("viewBox", "0 0 " + layout.width + " " + layout.height);
-      svg.style.setProperty("--dtree-svg-width", layout.width + "px");
-      svg.style.setProperty("--dtree-svg-height", layout.height + "px");
       svg.classList.toggle("dtree-labels-hidden", graph.nodes.length > 80);
 
       graph.edges.forEach(function (edge) {
@@ -291,12 +354,7 @@
       edgeCount.textContent = String(graph.edges.length);
       depthCount.textContent = String(graph.depth);
       selection.textContent = "Select a vertex to inspect it.";
-      if (canvasWrap) {
-        window.requestAnimationFrame(function () {
-          canvasWrap.scrollLeft = Math.max(0, (canvasWrap.scrollWidth - canvasWrap.clientWidth) / 2);
-          canvasWrap.scrollTop = 0;
-        });
-      }
+      setZoom(1, false);
     }
 
     function selectVertex(vertexId) {
@@ -328,7 +386,7 @@
         element.group.focus();
       }
       if (canvasWrap) {
-        canvasWrap.scrollLeft = Math.max(0, element.x - canvasWrap.clientWidth / 2);
+        canvasWrap.scrollLeft = Math.max(0, element.x * zoomLevel - canvasWrap.clientWidth / 2);
       }
     }
 
@@ -658,6 +716,9 @@
     branchingInput.addEventListener("input", updateBuilderPreview);
     depthInput.addEventListener("input", updateBuilderPreview);
     generateButton.addEventListener("click", generateGraph);
+    zoomOutButton.addEventListener("click", function () { setZoom(zoomLevel - ZOOM_STEP, true); });
+    zoomInButton.addEventListener("click", function () { setZoom(zoomLevel + ZOOM_STEP, true); });
+    zoomFitButton.addEventListener("click", fitTree);
     runButton.addEventListener("click", runAlgorithm);
     stopButton.addEventListener("click", function () { stopAlgorithm("Stopped by user."); });
     clearButton.addEventListener("click", function () {
