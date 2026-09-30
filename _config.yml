@@ -1,4 +1,5 @@
-title: Your Name
+title: Collin McDevitt
+description: Academic website of Collin McDevitt.
 url: "https://cmcdev-code.github.io"
 baseurl: ""
 markdown: kramdown
@@ -11,6 +12,5 @@ exclude:
   - README.md
   - Gemfile
   - Gemfile.lock
-collections:
-  posts:
-    output: true
+  - assets/icons
+  - assets/pics

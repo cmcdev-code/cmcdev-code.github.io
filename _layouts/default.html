@@ -3,103 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#d9d1c1">
-  <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
-  <script>
-    (function () {
-      try {
-        var stateKey = "siteWindowStateV1";
-        var newWindowKey = "siteNewBrowserWindow";
-        var state = JSON.parse(sessionStorage.getItem(stateKey) || "null") || {};
-        if (sessionStorage.getItem(newWindowKey) === "true") {
-          sessionStorage.removeItem(newWindowKey);
-          state = { mode: "default", left: null, top: null };
-          sessionStorage.setItem(stateKey, JSON.stringify(state));
-        }
-        if (state.mode === "minimized") {
-          state.mode = "default";
-          sessionStorage.setItem(stateKey, JSON.stringify(state));
-        }
-        var modes = ["default", "closed", "maximized"];
-        var mode = modes.indexOf(state.mode) === -1 ? "default" : state.mode;
-        var compactWindow = window.matchMedia && window.matchMedia("(max-width: 760px)").matches;
-        document.documentElement.setAttribute("data-window-mode", mode);
-        if (!compactWindow && mode === "default" && typeof state.left === "number" && typeof state.top === "number") {
-          document.documentElement.setAttribute("data-window-positioned", "true");
-          document.documentElement.style.setProperty("--boot-window-left", state.left + "px");
-          document.documentElement.style.setProperty("--boot-window-top", state.top + "px");
-        }
-      } catch (error) {
-        document.documentElement.setAttribute("data-window-mode", "default");
-      }
-    })();
-  </script>
-  <link rel="stylesheet" href="{{ "/assets/style.css" | relative_url }}?v=20260810-3">
-  {% if page.layout == "post" %}
-  <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']],
-        processEscapes: true
-      }
-    };
-  </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  {% endif %}
+  <meta name="description" content="{{ site.description | escape }}">
+  <title>{{ site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}?v=20260930-2">
 </head>
 <body>
-  <canvas id="gol" aria-hidden="true"></canvas>
+  <a class="skip-link" href="#main-content">Skip to content</a>
 
-  <div id="container" class="site-shell">
-    <header class="window-bar">
-      <div class="window-controls" aria-label="Window controls">
-        <button class="window-control window-close" type="button" data-window-action="close" aria-label="Close window" title="Close window"></button>
-        <button class="window-control window-maximize" type="button" data-window-action="maximize" aria-label="Maximize window" aria-pressed="false" title="Maximize window"></button>
-      </div>
+  <div class="page">
+    <header class="site-header">
+      <h1><a href="{{ '/' | relative_url }}">Collin McDevitt</a></h1>
     </header>
 
-    <div class="workspace">
-      <aside id="sidebar" aria-label="Site navigation">
-        <div class="sidebar-photo">
-          <img id="random-headshot" src="{{ "/assets/headshots-web/IMG_1155.jpg" | relative_url }}" width="450" height="600" decoding="async" alt="Portrait of Collin McDevitt">
-        </div>
-
-        <nav class="site-nav">
-          <a class="sidebar-link" href="{{ "/" | relative_url }}"{% if page.url == "/" %} aria-current="page"{% endif %}>home</a>
-          <a class="sidebar-link" href="{{ "/papers/" | relative_url }}"{% if page.url contains "/papers/" %} aria-current="page"{% endif %}>papers</a>
-          <a class="sidebar-link" href="{{ "/contact/" | relative_url }}"{% if page.url contains "/contact/" %} aria-current="page"{% endif %}>contact</a>
-          <a class="sidebar-link" href="{{ "/blog/" | relative_url }}"{% if page.url contains "/blog/" or page.layout == "post" %} aria-current="page"{% endif %}>blog</a>
-          <a class="sidebar-link" href="{{ "/pics/" | relative_url }}"{% if page.url contains "/pics/" %} aria-current="page"{% endif %}>pics</a>
-        </nav>
-      </aside>
-
-      <main id="main">
-        {{ content }}
-      </main>
-    </div>
+    <main id="main-content">
+      {{ content }}
+    </main>
 
   </div>
-  <button class="browser-launcher" id="browser-launcher" type="button" aria-label="Open browser" title="Double-click to open browser">
-    <span class="internet-browser-icon" aria-hidden="true">
-      <span class="internet-globe-lines"></span>
-    </span>
-  </button>
-
-  <script>
-    window.siteHeadshots = [
-    {% assign first = true %}
-    {% for f in site.static_files %}
-      {% if f.path contains '/assets/headshots-web/' %}
-        {% assign ext = f.extname | downcase %}
-        {% if ext == '.jpg' or ext == '.jpeg' or ext == '.png' %}
-          {% unless first %},{% endunless %}"{{ f.path | relative_url }}"
-          {% assign first = false %}
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-    ];
-  </script>
-  <script src="{{ "/assets/site.js" | relative_url }}?v=20260810-3"></script>
 </body>
 </html>
