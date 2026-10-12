@@ -141,6 +141,10 @@ p {
   max-width: 680px;
 }
 
+.publication + .publication {
+  margin-top: 22px;
+}
+
 @media (max-width: 600px) {
   .page {
     width: min(100% - 30px, 820px);

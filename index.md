@@ -70,6 +70,11 @@ layout: default
 <section id="publications" aria-labelledby="publications-heading">
   <h2 id="publications-heading">Publications</h2>
   <article class="publication">
+    <h3>Minimum Contagious Sets in Trees with Degree-Proportional Thresholds</h3>
+    <p>J. Choi and C. McDevitt.</p>
+    <p><em>Discrete Mathematics</em> (submitted).</p>
+  </article>
+  <article class="publication">
     <h3>Absorbing Sets of LDPC Codes Under a Gallager B Decoding Variant</h3>
     <p>Renaya Dhingra, Gretchen L. Matthews, Collin McDevitt, and Emily McMillon.</p>
     <p>Forthcoming in <a href="https://msp.org/soon/coming.php?jpath=involve">Involve, a Journal of Mathematics</a>.</p>
