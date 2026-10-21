@@ -72,7 +72,7 @@ layout: default
   <article class="publication">
     <h3>Minimum Contagious Sets in Trees with Degree-Proportional Thresholds</h3>
     <p>J. Choi and C. McDevitt.</p>
-    <p><em>Discrete Mathematics</em> (submitted).</p>
+    <p>Submitted to <em>Discrete Applied Mathematics</em>.</p>
   </article>
   <article class="publication">
     <h3>Absorbing Sets of LDPC Codes Under a Gallager B Decoding Variant</h3>
