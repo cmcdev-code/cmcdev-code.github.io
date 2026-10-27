@@ -70,7 +70,7 @@ layout: default
 <section id="publications" aria-labelledby="publications-heading">
   <h2 id="publications-heading">Publications</h2>
   <article class="publication">
-    <h3>Minimum Contagious Sets in Trees with Degree-Proportional Thresholds</h3>
+    <h3><a href="https://arxiv.org/pdf/2610.35745">Minimum Contagious Sets in Trees with Degree-Proportional Thresholds</a></h3>
     <p>J. Choi and C. McDevitt.</p>
     <p>Submitted to <em>Discrete Applied Mathematics</em>.</p>
   </article>
